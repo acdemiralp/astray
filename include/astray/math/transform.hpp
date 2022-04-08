@@ -7,7 +7,9 @@ namespace ast
 template <
   typename scalar_type     ,
   typename vector_type     = vector3   <scalar_type>,
-  typename quaternion_type = quaternion<scalar_type>>
+  typename matrix_type     = matrix33  <scalar_type>,
+  typename quaternion_type = quaternion<scalar_type>,
+  typename angle_axis_type = angle_axis<scalar_type>>
 struct transform
 {
   vector_type right              () const
@@ -29,9 +31,9 @@ struct transform
   }
   void        rotation_from_euler(const vector_type& euler)
   {
-    rotation = angle_axis(euler[0], vector_type::UnitX())
-             * angle_axis(euler[1], vector_type::UnitY())
-             * angle_axis(euler[2], vector_type::UnitZ());
+    rotation = angle_axis_type(euler[0], vector_type::UnitX())
+             * angle_axis_type(euler[1], vector_type::UnitY())
+             * angle_axis_type(euler[2], vector_type::UnitZ());
   }
 
   void        look_at            (const vector_type& target, const vector_type& up = vector_type::UnitY())
@@ -40,7 +42,7 @@ struct transform
     const auto right   = up     .cross(forward).normalized();
     const auto true_up = forward.cross(right  ).normalized();
 
-    matrix33 matrix;
+    matrix_type matrix;
     matrix << right, true_up, forward;
 
     rotation = quaternion_type(matrix);

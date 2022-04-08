@@ -25,27 +25,27 @@ public:
   {
     const auto p1_2_p2_2 = static_cast<scalar_type>(std::pow(position[1], 2)) + static_cast<scalar_type>(std::pow(position[2], 2));
 
-    const auto r1        = std::sqrt(p1_2_p2_2 + static_cast<scalar_type>(std::pow(position[3] - position1_, 2)));
-    const auto r2        = std::sqrt(p1_2_p2_2 + static_cast<scalar_type>(std::pow(position[3] - position2_, 2)));
-    const auto a         = std::exp(h_ * position[0]);
-    const auto omega     = static_cast<scalar_type>(1) + mass1_ / (r1 * a) + mass2_ / (r2 * a);
+    const auto r1        = std::sqrt(p1_2_p2_2 + static_cast<scalar_type>(std::pow(position[3] - position1, 2)));
+    const auto r2        = std::sqrt(p1_2_p2_2 + static_cast<scalar_type>(std::pow(position[3] - position2, 2)));
+    const auto a         = std::exp(h * position[0]);
+    const auto omega     = static_cast<scalar_type>(1) + mass1 / (r1 * a) + mass2 / (r2 * a);
 
     const auto r1_2_a    = static_cast<scalar_type>(std::pow(r1, 2)) * a;
     const auto r2_2_a    = static_cast<scalar_type>(std::pow(r2, 2)) * a;
-    const auto m1_r1_2_a = -mass1_ / r1_2_a;
-    const auto m2_r2_2_a = -mass2_ / r2_2_a;
+    const auto m1_r1_2_a = -mass1 / r1_2_a;
+    const auto m2_r2_2_a = -mass2 / r2_2_a;
 
     const auto dr1dx     = position[1] / r1;
     const auto dr1dy     = position[2] / r1;
-    const auto dr1dz     = (position[3] - position1_) / r1;
+    const auto dr1dz     = (position[3] - position1) / r1;
     const auto dr2dx     = position[1] / r2;
     const auto dr2dy     = position[2] / r2;
-    const auto dr2dz     = (position[3] - position2_) / r2;
+    const auto dr2dz     = (position[3] - position2) / r2;
     const auto dodx      = m1_r1_2_a * dr1dx + m2_r2_2_a * dr2dx;
     const auto dody      = m1_r1_2_a * dr1dy + m2_r2_2_a * dr2dy;
     const auto dodz      = m1_r1_2_a * dr1dz + m2_r2_2_a * dr2dz;
-    const auto dadt      = h_ * a;
-    const auto dodt      = -mass1_ * dadt / (r1 * static_cast<scalar_type>(std::pow(a, 2))) - mass2_ * dadt / (r2 * static_cast<scalar_type>(std::pow(a, 2)));
+    const auto dadt      = h * a;
+    const auto dodt      = -mass1 * dadt / (r1 * static_cast<scalar_type>(std::pow(a, 2))) - mass2 * dadt / (r2 * static_cast<scalar_type>(std::pow(a, 2)));
 
     const auto t1        = omega;
     const auto t2        = static_cast<scalar_type>(1) / t1;
@@ -111,11 +111,10 @@ public:
     return symbols;
   }
   
-protected:
-  scalar_type mass1_     = static_cast<scalar_type>( 1);
-  scalar_type position1_ = static_cast<scalar_type>( 1);
-  scalar_type mass2_     = static_cast<scalar_type>( 1);
-  scalar_type position2_ = static_cast<scalar_type>(-1);
-  scalar_type h_         = static_cast<scalar_type>(constants::eps);
+  scalar_type mass1     = static_cast<scalar_type>( 1);
+  scalar_type position1 = static_cast<scalar_type>( 1);
+  scalar_type mass2     = static_cast<scalar_type>( 1);
+  scalar_type position2 = static_cast<scalar_type>(-1);
+  scalar_type h         = static_cast<scalar_type>(constants::eps);
 };
 }

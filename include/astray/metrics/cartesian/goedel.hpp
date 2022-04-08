@@ -18,12 +18,12 @@ public:
 
   christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
-    const auto t1  = static_cast<scalar_type>(std::pow(alpha_     , 2));
+    const auto t1  = static_cast<scalar_type>(std::pow(alpha      , 2));
     const auto t3  = static_cast<scalar_type>(std::pow(position[1], 2));
     const auto t4  = static_cast<scalar_type>(std::pow(position[2], 2));
     const auto t6  = static_cast<scalar_type>(1) / (static_cast<scalar_type>(4) * t1 + t3 + t4);
     const auto t8  = static_cast<scalar_type>(2) * position[1] * t6;
-    const auto t14 = static_cast<scalar_type>(1) / t1 / alpha_;
+    const auto t14 = static_cast<scalar_type>(1) / t1 / alpha;
     const auto t16 = std::sqrt(static_cast<scalar_type>(2));
     const auto t20 = position[2] * position[1] * (static_cast<scalar_type>(8) * t1 + t3 + t4) * t14 * t6 * constants::c * t16 / static_cast<scalar_type>(8);
     const auto t21 = t3 * t4;
@@ -37,7 +37,7 @@ public:
     const auto t35 = static_cast<scalar_type>(std::pow(t3, 2));
     const auto t36 = t1 * t3;
     const auto t41 = (t35 + t21 + t24 + static_cast<scalar_type>(8) * t36) * t14 * t30 / static_cast<scalar_type>(8);
-    const auto t47 = t6 / alpha_ / constants::c;
+    const auto t47 = t6 / alpha / constants::c;
     const auto t48 = t16 * position[2] * position[1] * t47;
     const auto t49 = static_cast<scalar_type>(8) * t23;
     const auto t50 = static_cast<scalar_type>(6) * t25;
@@ -78,7 +78,6 @@ public:
     return symbols;
   }
 
-protected:
-  scalar_type alpha_ = static_cast<scalar_type>(1);
+  scalar_type alpha = static_cast<scalar_type>(1);
 };
 }

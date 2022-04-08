@@ -18,7 +18,7 @@ public:
 
   thrust::optional<termination_reason> check_termination  (const vector_type& position, const vector_type& direction) const override
   {
-    const auto rs = constants::_2G * mass_ / constants::c_sq;
+    const auto rs = constants::_2G * mass / constants::c_sq;
     if (position[1] < static_cast<scalar_type>(0) || 
         static_cast<scalar_type>(std::pow(position[1], 2)) <= (static_cast<scalar_type>(1) + constants::eps) * static_cast<scalar_type>(std::pow(rs, 2)))
       return termination_reason::spacetime_breakdown;
@@ -27,7 +27,7 @@ public:
 
   christoffel_symbols_type             christoffel_symbols(const vector_type& position) const override
   {
-    const auto rs    = constants::_2G * mass_ / constants::c_sq;
+    const auto rs    = constants::_2G * mass / constants::c_sq;
     const auto r     = position[1];
     const auto theta = position[2];
     const auto t1    = r - rs;
@@ -58,7 +58,6 @@ public:
     return symbols;
   }
   
-protected:
-  scalar_type mass_ = static_cast<scalar_type>(1);
+  scalar_type mass = static_cast<scalar_type>(1);
 };
 }
