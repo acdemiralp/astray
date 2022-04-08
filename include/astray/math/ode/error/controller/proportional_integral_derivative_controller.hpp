@@ -9,7 +9,7 @@
 #include <astray/math/ode/algebra/quantity_operations.hpp>
 #include <astray/math/ode/error/error_evaluation.hpp>
 #include <astray/math/ode/error/extended_result.hpp>
-#include <astray/math/ode/tableau/order.hpp>
+#include <astray/math/ode/tableau/tableau_traits.hpp>
 #include <astray/parallel/thrust.hpp>
 
 namespace ast
@@ -53,6 +53,6 @@ struct proportional_integral_derivative_controller
   const std::array<time_type, 3>              beta               = { time_type(1)   , time_type(0)   , time_type(0)    };
   std::array<time_type, 3>                    error              = { time_type(1e-3), time_type(1e-3), time_type(1e-3) };
   
-  static constexpr time_type                  ceschino_exponent  = time_type(1) / (std::min(order<tableau_type>, extended_order<tableau_type>) + time_type(1));
+  static constexpr time_type                  ceschino_exponent  = time_type(1) / (std::min(order_v<tableau_type>, extended_order_v<tableau_type>) + time_type(1));
 };
 }

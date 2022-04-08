@@ -7,7 +7,7 @@
 #include <astray/math/ode/algebra/quantity_operations.hpp>
 #include <astray/math/ode/error/error_evaluation.hpp>
 #include <astray/math/ode/error/extended_result.hpp>
-#include <astray/math/ode/tableau/order.hpp>
+#include <astray/math/ode/tableau/tableau_traits.hpp>
 
 namespace ast
 {
@@ -43,6 +43,6 @@ struct integral_controller
   const time_type            factor_minimum     = time_type(1e-2);
   const time_type            factor_maximum     = time_type(1e+2);
 
-  static constexpr time_type ceschino_exponent  = time_type(1) / (std::min(order<tableau_type>, extended_order<tableau_type>) + time_type(1));
+  static constexpr time_type ceschino_exponent  = time_type(1) / (std::min(order_v<tableau_type>, extended_order_v<tableau_type>) + time_type(1));
 };
 }

@@ -7,7 +7,7 @@
 #include <astray/math/ode/algebra/quantity_operations.hpp>
 #include <astray/math/ode/error/error_evaluation.hpp>
 #include <astray/math/ode/error/extended_result.hpp>
-#include <astray/math/ode/tableau/order.hpp>
+#include <astray/math/ode/tableau/tableau_traits.hpp>
 
 namespace ast
 {
@@ -46,8 +46,8 @@ struct proportional_integral_controller
   const time_type factor             = time_type(0.8 );
   const time_type factor_minimum     = time_type(1e-2);
   const time_type factor_maximum     = time_type(1e+2);
-  const time_type alpha              = time_type(7.0 / (10.0 * order<tableau_type>));
-  const time_type beta               = time_type(4.0 / (10.0 * order<tableau_type>));
+  const time_type alpha              = time_type(7.0 / (10.0 * order_v<tableau_type>));
+  const time_type beta               = time_type(4.0 / (10.0 * order_v<tableau_type>));
   time_type       previous_error     = time_type(1e-3);
 };
 }
