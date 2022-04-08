@@ -22,21 +22,21 @@ void wrap_angles(type& value)
 {
   if      constexpr (system == coordinate_system::boyer_lindquist)
   {
-    wrap_angle(value[2], constants::pi   <typename type::value_type>, true );
-    wrap_angle(value[3], constants::_2_pi<typename type::value_type>, false);
+    wrap_angle(value[2], constants<typename type::value_type>::pi  , true );
+    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
   }
   else if constexpr (system == coordinate_system::cylindrical)
   {
-    wrap_angle(value[2], constants::_2_pi<typename type::value_type>, false);
+    wrap_angle(value[2], constants<typename type::value_type>::_2pi, false);
   }
   else if constexpr (system == coordinate_system::prolate_spheroidal)
   {
-    wrap_angle(value[3], constants::_2_pi<typename type::value_type>, false);
+    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
   }
   else if constexpr (system == coordinate_system::spherical)
   {
-    wrap_angle(value[2], constants::pi   <typename type::value_type>, true );
-    wrap_angle(value[3], constants::_2_pi<typename type::value_type>, false);
+    wrap_angle(value[2], constants<typename type::value_type>::pi  , true );
+    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
   }
 }
 
