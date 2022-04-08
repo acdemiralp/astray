@@ -4,6 +4,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include <cstddef>
+#include <cstdint>
 #include <filesystem>
 #include <stdexcept>
 #include <vector>
@@ -12,22 +13,21 @@
 #include <astray/math/linear_algebra.hpp>
 #include <astray/third_party/stb/stb_image.h>
 #include <astray/third_party/stb/stb_image_write.h>
-#include <astray/utility/multi_vector.hpp>
 
 namespace ast
 {
 template <typename type>
-class image : public multi_vector<type, 2, std::experimental::layout_left>
+class image
 {
 public:
-  using base_type = multi_vector<type, 2, std::experimental::layout_left>;
-  using size_type = typename base_type::multi_size_type;
+  using storage_type = std::vector<type>;
+  using size_type    = vector2<std::int32_t>;
 
   explicit image  (const std::filesystem::path& filepath)
   {
     load(filepath);
   }
-  explicit image  (const size_type&   size, const type& value = type()) : base_type(size, value)
+  explicit image  (const size_type& size, const type& value = type()) : data(size.prod(), value), size(size)
   {
     
   }
@@ -37,28 +37,36 @@ public:
   image& operator=(const image&       that) = default;
   image& operator=(      image&&      temp) = default;
   
-  void                     load(const std::filesystem::path& filepath)
+  constexpr       type& at(const size_type& index)
+  {
+    return data[ravel_multi_index(index, size)];
+  }
+  constexpr const type& at(const size_type& index) const
+  {
+    return data[ravel_multi_index(index, size)];
+  }
+
+  void load(const std::filesystem::path& filepath)
   {
     if (!exists(filepath))
       throw std::runtime_error("File does not exist!");
 
     auto components = 0;
-    auto* const raw = reinterpret_cast<type*>(stbi_load(filepath.string().c_str(), &size_[0], &size_[1], &components, sizeof(type)));
-    data_ = base_type::storage_type(raw, raw + size_[0] * size_[1]); // Copy will not be necessary if https://github.com/nothings/stb/issues/58 is resolved.
+    auto* const raw = reinterpret_cast<type*>(stbi_load(filepath.string().c_str(), &size[0], &size[1], &components, sizeof(type)));
+    data = std::vector<type>(raw, raw + size[0] * size[1]); // Copy will not be necessary if https://github.com/nothings/stb/issues/58 is resolved.
     stbi_image_free(raw);
-
-    // TODO
   }
-  void                     save(const std::filesystem::path& filepath) const
+  void save(const std::filesystem::path& filepath) const
   {
     const auto extension = filepath.extension();
-    if      (extension == ".bmp") stbi_write_bmp(filepath.string().c_str(), size[0], size[1], sizeof(type), base_type::storage_.data());
-    else if (extension == ".jpg") stbi_write_jpg(filepath.string().c_str(), size[0], size[1], sizeof(type), base_type::storage_.data(), 100);
-    else if (extension == ".png") stbi_write_png(filepath.string().c_str(), size[0], size[1], sizeof(type), base_type::storage_.data(), size[0] * sizeof(type));
-    else if (extension == ".tga") stbi_write_tga(filepath.string().c_str(), size[0], size[1], sizeof(type), base_type::storage_.data());
+    if      (extension == ".bmp") stbi_write_bmp(filepath.string().c_str(), size[0], size[1], sizeof(type), data.data());
+    else if (extension == ".jpg") stbi_write_jpg(filepath.string().c_str(), size[0], size[1], sizeof(type), data.data(), 100);
+    else if (extension == ".png") stbi_write_png(filepath.string().c_str(), size[0], size[1], sizeof(type), data.data(), size[0] * sizeof(type));
+    else if (extension == ".tga") stbi_write_tga(filepath.string().c_str(), size[0], size[1], sizeof(type), data.data());
     else throw std::runtime_error("Unsupported extension!");
-
-    // TODO
   }
+  
+  std::vector<type>     data;
+  vector2<std::int32_t> size;
 };
 }

@@ -126,12 +126,12 @@ public:
   video& operator=(const video&  that) = delete ;
   video& operator=(      video&& temp) = default;
 
-  void append(const image<vector3<std::uint8_t>>& frame)
+  void append(image<vector3<std::uint8_t>>& frame)
   {
 #ifdef ASTRAY_USE_FFMPEG
-    std::uint8_t* data     [8] {&frame.data()[0][0]};
-    std::int32_t  line_size[8] {frame.size()[0] * sizeof(vector3<std::uint8_t>)};
-    sws_scale(sws_context_, data, line_size, 0, frame.size()[1], frame_->data, frame_->linesize);
+    std::uint8_t* data     [8] {&frame.data[0][0]};
+    std::int32_t  line_size[8] {frame.size[0] * sizeof(vector3<std::uint8_t>)};
+    sws_scale(sws_context_, data, line_size, 0, frame.size[1], frame_->data, frame_->linesize);
 
     AVPacket packet;
     av_init_packet(&packet);
