@@ -4,9 +4,11 @@
 
 namespace ast
 {
-template <typename scalar_type, typename vector_type = vector4<scalar_type>>
+template <typename vector_type_>
 struct ray
 {
+  using vector_type = vector_type_;
+
   vector_type position  = vector_type::Zero();
   vector_type direction = vector_type::Zero();
 };

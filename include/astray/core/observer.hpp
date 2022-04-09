@@ -14,7 +14,7 @@ class observer
 public:
   using projection_type = projection<scalar_type>;
   using transform_type  = transform <scalar_type>;
-  using ray_type        = ray       <scalar_type>;
+  using ray_type        = ray       <vector4<scalar_type>>;
 
   template <typename image_size_type>
   thrust::device_vector<ray_type> generate_rays(

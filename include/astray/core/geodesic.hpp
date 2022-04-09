@@ -7,60 +7,58 @@
 #include <astray/math/ray.hpp>
 #include <astray/parallel/thrust.hpp>
 
-namespace ast
+namespace ast::geodesic
 {
 template <
-  typename scalar_type          , 
-  typename metric_type          ,
-  typename tableau_type         = dormand_prince_5_tableau<scalar_type>,
+  typename ray_type             , 
+  typename metric_type          , 
+  typename scalar_type          ,
+  typename tableau_type         ,
   typename error_evaluator_type = proportional_integral_controller<tableau_type>>
-class geodesic
+thrust::optional<termination_reason> integrate(
+  ray_type&                            ray             ,
+  const metric_type&                   metric          ,
+  const std::size_t                    iterations      , 
+  const scalar_type                    lambda_step_size, 
+  const scalar_type                    lambda          = static_cast<scalar_type>(0),
+  error_evaluator_type                 error_evaluator = error_evaluator_type(),
+  thrust::optional<aabb4<scalar_type>> bounds          = thrust::nullopt)
 {
-  using ray_type      = ray<scalar_type>;
-  using bounds_type   = thrust::optional<aabb4<scalar_type>>;
+  using value_type    = vector<scalar_type, 8>;
+  using method_type   = explicit_method<tableau_type>;
+  using problem_type  = initial_value_problem <scalar_type, mapped<value_type>, device_function<value_type(scalar_type, const value_type&)>>;
+  using iterator_type = adaptive_step_iterator<method_type, problem_type, error_evaluator_type>;
   
-  using vector_type   = vector<scalar_type, 8>;
-  using problem_type  = initial_value_problem <scalar_type, mapped<vector_type>, device_function<vector_type(scalar_type, const vector_type&)>>;
-  using iterator_type = adaptive_step_iterator<explicit_method<tableau_type>, problem_type, error_evaluator_type>;
-
-  thrust::optional<termination_reason> integrate(const std::size_t iterations, const scalar_type lambda_step_size, const scalar_type lambda = static_cast<scalar_type>(0))
+  iterator_type iterator{problem_type
   {
-    iterator_type iterator(problem_type
+    lambda,
+    mapped<value_type>(ray.position.data()), // Valid as long as ray.position and ray.direction are contiguous in memory. 
+    [&] (const scalar_type t, const value_type& y)
     {
-      lambda,
-      mapped<vector_type>(ray.position.data()), // Valid as long as ray.position and ray.direction are contiguous in memory. 
-      [&] (const scalar_type t, const vector_type& y)
-      {
-        vector_type dydt;
-        dydt.head(4) = y.tail(4);
-        auto christoffel_symbols = metric.compute_christoffel_symbols(y.head(4));
-        for (auto i = 0; i < 4; ++i)
-          for (auto j = 0; j < 4; ++j)
-            for (auto k = 0; k < 4; ++k)
-              dydt.tail(4)[k] -= christoffel_symbols(i, j, k) * y.tail(4)[i] * y.tail(4)[j];
-        return dydt;
-      }
-    }, lambda_step_size, error_evaluator);
-
-    for (std::size_t iteration = 0; iteration < iterations; ++iteration)
-    {
-      iterator++;      
-    
-      auto termination = metric.check_termination(ray.position, ray.direction);
-      if (termination)
-        return termination;
-      if (bounds && !bounds.contains(ray.position))
-        return termination_reason::out_of_bounds;
-      if (ray.position.hasNaN() || ray.direction.hasNaN())
-        return termination_reason::numeric_error;
+      value_type dydt;
+      dydt.head(4) = y.tail(4);
+      auto christoffel_symbols = metric.compute_christoffel_symbols(y.head(4));
+      for (auto i = 0; i < 4; ++i)
+        for (auto j = 0; j < 4; ++j)
+          for (auto k = 0; k < 4; ++k)
+            dydt.tail(4)[k] -= christoffel_symbols(i, j, k) * y.tail(4)[i] * y.tail(4)[j];
+      return dydt;
     }
-    
-    return thrust::nullopt;
+  }, lambda_step_size, error_evaluator};
+  
+  for (std::size_t iteration = 0; iteration < iterations; ++iteration)
+  {
+    iterator++;      
+      
+    auto termination = metric.check_termination(ray.position, ray.direction);
+    if (termination)
+      return termination;
+    if (bounds && !bounds.contains(ray.position))
+      return termination_reason::out_of_bounds;
+    if (ray.position.hasNaN() || ray.direction.hasNaN())
+      return termination_reason::numeric_error;
   }
-
-  ray_type&            ray            ;
-  const metric_type&   metric         ;
-  error_evaluator_type error_evaluator;
-  bounds_type          bounds         ;
-};
+      
+  return thrust::nullopt;
+}
 }

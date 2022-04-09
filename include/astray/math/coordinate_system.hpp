@@ -255,7 +255,7 @@ void convert    (type& value, const scalar free_parameter)
   }
 }
 
-template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
+template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
 void convert_ray(type& value)
 {
   if        constexpr (source == coordinate_system::cartesian)
@@ -366,7 +366,7 @@ void convert_ray(type& value)
     }
   }
 }
-template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
+template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
 void convert_ray(type& value, const scalar free_parameter)
 {
   if        constexpr (source == coordinate_system::boyer_lindquist)
