@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <type_traits>
 #include <utility>
 
 #include <astray/math/ode/error/extended_result.hpp>
@@ -19,7 +20,7 @@ public:
   template <typename problem_type>
   static constexpr auto apply(const problem_type& problem, const typename problem_type::time_type step_size)
   {
-    using value_type = typename problem_type::value_type;
+    using value_type = std::remove_cv_t<std::remove_reference_t<typename problem_type::value_type>>;
 
     std::array<value_type, tableau_type::stages> stages;
     constexpr_for<0, tableau_type::stages, 1>([&problem, &step_size, &stages] (auto i)

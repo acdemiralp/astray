@@ -55,4 +55,8 @@ using quaternion = Eigen::Quaternion<type>;
 // Angle axes.
 template <typename type>
 using angle_axis = Eigen::AngleAxis <type>;
+
+// Mapped types.
+template <typename type>
+using mapped     = Eigen::Map       <type>;
 }

@@ -4,14 +4,15 @@
 
 namespace ast
 {
-template <
-  typename scalar_type     ,
-  typename vector_type     = vector3   <scalar_type>,
-  typename matrix_type     = matrix33  <scalar_type>,
-  typename quaternion_type = quaternion<scalar_type>,
-  typename angle_axis_type = angle_axis<scalar_type>>
+template <typename scalar_type_>
 struct transform
 {
+  using scalar_type     = scalar_type_;
+  using vector_type     = vector3   <scalar_type>;
+  using matrix_type     = matrix33  <scalar_type>;
+  using quaternion_type = quaternion<scalar_type>;
+  using angle_axis_type = angle_axis<scalar_type>;
+
   vector_type right              () const
   {
     return rotation * vector_type::UnitX();

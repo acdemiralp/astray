@@ -7,6 +7,8 @@ namespace ast
 template <typename type = double>
 struct dormand_prince_5_tableau
 {
+  using value_type = type;
+
   static constexpr std::size_t          stages {7};
   static constexpr std::array<type, 21> a      { type(    1.0 /     5.0),
                                                  type(    3.0 /    40.0), type(     9.0 /   40.0),

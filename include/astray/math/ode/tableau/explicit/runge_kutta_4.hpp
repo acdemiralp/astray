@@ -7,6 +7,8 @@ namespace ast
 template <typename type = double>
 struct runge_kutta_4_tableau
 {
+  using value_type = type;
+
   static constexpr std::size_t         stages {4};
   static constexpr std::array<type, 6> a      {type(0.5      ),
                                                type(0.0      ), type(0.5      ),

@@ -7,6 +7,8 @@ namespace ast
 template <typename type = double>
 struct forward_euler_tableau
 {
+  using value_type = type;
+
   static constexpr std::size_t         stages {1};
   static constexpr std::array<type, 1> a      {type{0.0}};
   static constexpr std::array<type, 1> b      {type{1.0}};
