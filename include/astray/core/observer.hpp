@@ -8,6 +8,7 @@
 
 namespace ast
 {
+// Still has room for improvement.
 template <typename scalar_type>
 class observer
 {

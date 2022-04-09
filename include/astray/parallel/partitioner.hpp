@@ -14,7 +14,7 @@ namespace ast
 // which consists of blocks of block_size based on the communicator_size.
 // Also computes a rank_multi_index which is the N-dimensional index of the rank, and a 
 // rank_offset which equals block_size * rank_multi_index, based on the communicator_rank.
-template <std::size_t dimensions, typename size_type = std::size_t, typename multi_size_type = std::array<size_type, dimensions>>
+template <std::size_t dimensions, typename size_type = std::size_t, typename multi_size_type = std::array<size_type, dimensions>, bool fortran_order = false>
 class partitioner
 {
 public:
@@ -94,7 +94,7 @@ protected:
       prime_factors.pop_back();
     }
     std::transform(domain_size_.begin(), domain_size_.end(), grid_size_       .begin(), block_size_ .begin(), std::divides   <>());
-    rank_multi_index_ = unravel_index(communicator_rank_, grid_size_);
+    rank_multi_index_ = unravel_index<multi_size_type, fortran_order>(communicator_rank_, grid_size_);
     std::transform(block_size_ .begin(), block_size_ .end(), rank_multi_index_.begin(), rank_offset_.begin(), std::multiplies<>());
   }
   

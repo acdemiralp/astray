@@ -39,11 +39,11 @@ public:
   
   constexpr       type& at(const size_type& index)
   {
-    return data[ravel_multi_index(index, size)];
+    return data[ravel_multi_index<size_type, true>(index, size)];
   }
   constexpr const type& at(const size_type& index) const
   {
-    return data[ravel_multi_index(index, size)];
+    return data[ravel_multi_index<size_type, true>(index, size)];
   }
 
   void load(const std::filesystem::path& filepath)
