@@ -13,7 +13,7 @@ namespace ast
 template <
   typename method_type_          , 
   typename problem_type_         , 
-  typename error_evaluator_type_ = proportional_integral_controller<typename method_type_::tableau_type>>
+  typename error_evaluator_type_ = proportional_integral_controller<std::remove_reference_t<typename problem_type_::time_type>, typename method_type_::tableau_type>>
 class adaptive_step_iterator
 {
 public:
