@@ -1,6 +1,5 @@
 #pragma once
 
-#include <astray/core/metric.hpp>
 #include <astray/core/termination_reason.hpp>
 #include <astray/math/ode/ode.hpp>
 #include <astray/math/linear_algebra.hpp>
@@ -9,13 +8,13 @@
 
 namespace ast
 {
-template <typename scalar_type, typename tableau_type, typename error_evaluator_type = proportional_integral_controller<scalar_type, tableau_type>>
+template <typename tableau_type, typename error_evaluator_type = proportional_integral_controller<typename tableau_type::value_type, tableau_type>>
 class geodesic
 {
 public:
+  using scalar_type   = typename tableau_type::value_type;
   using ray_type      = ray<vector4<scalar_type>>;
   using bounds_type   = thrust::optional<aabb4<scalar_type>>;
-
   using value_type    = vector<scalar_type, 8>;
   using method_type   = explicit_method<tableau_type>;
   using problem_type  = initial_value_problem <scalar_type, mapped<value_type>, device_function<value_type(scalar_type, const value_type&)>>;
