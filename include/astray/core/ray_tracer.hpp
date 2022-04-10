@@ -133,10 +133,8 @@ public:
         else
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
       
-        // BUG!
-        //auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
-        auto termination = thrust::optional(termination_reason::out_of_bounds);
-
+        const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
+        
         if (termination == thrust::nullopt || termination == termination_reason::out_of_bounds)
         {
           if constexpr (metric_type::coordinate_system() == coordinate_system::boyer_lindquist || metric_type::coordinate_system() == coordinate_system::prolate_spheroidal)
@@ -147,26 +145,27 @@ public:
           ray.position -= data->observer_position; // Environment map is relative to observer.
 
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
-
-          // BUG!
-          //const image_size_type background_index(
-          //  std::floor((ray.position[3] - constants::eps) / constants::_2pi * static_cast<scalar_type>(data->background_size[0])),
-          //  std::floor((ray.position[2] - constants::eps) / constants::pi   * static_cast<scalar_type>(data->background_size[1])));
           
-          data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
+          const image_size_type background_index(
+            std::floor(ray.position[3] / constants::_2pi * static_cast<scalar_type>(data->background_size[0] - 1)),
+            std::floor(ray.position[2] / constants::pi   * static_cast<scalar_type>(data->background_size[1] - 1)));
+          
+          //data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
         }
         
         if (data->debug)
         {
-          if      (termination == termination_reason::constraint_violation)
-            data->result[index] = pixel_type(255, 128, 128);
-          else if (termination == termination_reason::numeric_error       )
-            data->result[index] = pixel_type(128, 255, 128);
-          else if (termination == termination_reason::spacetime_breakdown )
-            data->result[index] = pixel_type(128, 128, 255);
+        //  if      (termination == termination_reason::constraint_violation)
+        //    data->result[index] = pixel_type(255, 128, 128);
+        //  else if (termination == termination_reason::numeric_error       )
+        //    data->result[index] = pixel_type(128, 255, 128);
+        //  else if (termination == termination_reason::spacetime_breakdown )
+        //    data->result[index] = pixel_type(128, 128, 255);
         }
       });
 
+    if constexpr (shared_device == shared_device_type::cuda)
+      cudaDeviceSynchronize();
     thrust::copy(device_result.begin(), device_result.end(), result.data.begin());
     if constexpr (shared_device == shared_device_type::cuda)
       cudaDeviceSynchronize();

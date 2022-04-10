@@ -102,6 +102,12 @@ if(ASTRAY_BUILD_TESTS)
   assign_source_group  (${TEST_MAIN_SOURCES})
 
   file(GLOB PROJECT_TEST_CPPS tests/*.cpp tests/*.cu)
+
+  # Hack for compiling .cu files as .cpp.
+  if   (NOT ${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
+    set_source_files_properties(${PROJECT_TEST_CPPS} PROPERTIES LANGUAGE CXX)
+  endif()
+
   foreach(_SOURCE ${PROJECT_TEST_CPPS})
     get_filename_component(_NAME ${_SOURCE} NAME_WE)
     add_executable        (${_NAME} ${_SOURCE} $<TARGET_OBJECTS:${TEST_MAIN_NAME}>)

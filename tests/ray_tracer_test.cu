@@ -14,7 +14,7 @@ TEST_CASE("ast::ray_tracer")
     {320, 240},
     {},
     100,
-    0.01,
+    0.2,
     0,
     {},
     {},
@@ -22,7 +22,7 @@ TEST_CASE("ast::ray_tracer")
   );
 
   ray_tracer.background.load("../data/backgrounds/checkerboard.png");
-  ray_tracer.observer.transform.translation = {0.0f, 0.0f, -10.0f};
+  ray_tracer.observer.transform.translation = {0.0f, 10.0f, -10.0f};
   ray_tracer.observer.transform.look_at({0.0f, 0.0f, 0.0f});
   ray_tracer.observer.projection = ast::perspective_projection<scalar_type> {ast::to_radians(60.0f), 320.0f / 240.0f};
 
