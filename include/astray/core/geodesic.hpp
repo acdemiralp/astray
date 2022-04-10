@@ -19,7 +19,7 @@ public:
   using error_evaluator_type = error_evaluator_type_;
 
   template <typename ray_type, typename metric_type>
-  constexpr thrust::optional<termination_reason> integrate(
+  static constexpr thrust::optional<termination_reason> integrate(
     ray_type&                   ray             ,
     const metric_type&          metric          ,
     const std::size_t           iterations      , 

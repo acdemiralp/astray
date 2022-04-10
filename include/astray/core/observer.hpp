@@ -74,7 +74,7 @@ public:
     thrust::for_each(
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(0)          , rays.begin())),
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(rays.size()), rays.end  ())),
-      [data=data.data().get()] (const auto& iteratee)
+      [data = data.data().get()] (const auto& iteratee)
       {
         const auto local_index        = thrust::get<0>(iteratee);
         const auto local_multi_index  = unravel_index<image_size_type, true>(local_index, data->local_size);
