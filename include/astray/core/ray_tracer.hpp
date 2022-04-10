@@ -155,17 +155,15 @@ public:
         
         if (data->debug)
         {
-        //  if      (termination == termination_reason::constraint_violation)
-        //    data->result[index] = pixel_type(255, 128, 128);
-        //  else if (termination == termination_reason::numeric_error       )
-        //    data->result[index] = pixel_type(128, 255, 128);
-        //  else if (termination == termination_reason::spacetime_breakdown )
-        //    data->result[index] = pixel_type(128, 128, 255);
+          if      (termination == termination_reason::constraint_violation)
+            data->result[index] = pixel_type(255, 128, 128);
+          else if (termination == termination_reason::numeric_error       )
+            data->result[index] = pixel_type(128, 255, 128);
+          else if (termination == termination_reason::spacetime_breakdown )
+            data->result[index] = pixel_type(128, 128, 255);
         }
       });
 
-    if constexpr (shared_device == shared_device_type::cuda)
-      cudaDeviceSynchronize();
     thrust::copy(device_result.begin(), device_result.end(), result.data.begin());
     if constexpr (shared_device == shared_device_type::cuda)
       cudaDeviceSynchronize();
