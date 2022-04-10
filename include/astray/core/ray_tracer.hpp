@@ -132,8 +132,10 @@ public:
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray, metric.coordinate_system_parameter());
         else
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
-
-        auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
+      
+        // BUG!
+        //auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
+        auto termination = thrust::optional(termination_reason::out_of_bounds);
 
         if (termination == thrust::nullopt || termination == termination_reason::out_of_bounds)
         {
@@ -146,10 +148,11 @@ public:
 
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
 
-          const image_size_type background_index(
-            std::floor((ray.position[3] - constants::eps) / constants::_2pi * static_cast<scalar_type>(data->background_size[0])),
-            std::floor((ray.position[2] - constants::eps) / constants::pi   * static_cast<scalar_type>(data->background_size[1])));
-
+          // BUG!
+          //const image_size_type background_index(
+          //  std::floor((ray.position[3] - constants::eps) / constants::_2pi * static_cast<scalar_type>(data->background_size[0])),
+          //  std::floor((ray.position[2] - constants::eps) / constants::pi   * static_cast<scalar_type>(data->background_size[1])));
+          
           data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
         }
         
