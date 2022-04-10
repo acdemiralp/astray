@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
-#include <utility>
 
 #include <astray/math/ode/error/controller/proportional_integral_controller.hpp>
 #include <astray/math/ode/tableau/tableau_traits.hpp>

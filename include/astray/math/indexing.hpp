@@ -2,10 +2,12 @@
 
 #include <cstddef>
 
+#include <astray/parallel/thrust.hpp>
+
 namespace ast
 {
 template <typename type, bool fortran_order = false>
-constexpr type        unravel_index    (std::size_t index      , const type& dimensions)
+__device__ constexpr type        unravel_index    (std::size_t index      , const type& dimensions)
 {
   type multi_index {};
 
@@ -25,7 +27,7 @@ constexpr type        unravel_index    (std::size_t index      , const type& dim
   return multi_index;
 }
 template <typename type, bool fortran_order = false>
-constexpr std::size_t ravel_multi_index(const type& multi_index, const type& dimensions)
+__device__ constexpr std::size_t ravel_multi_index(const type& multi_index, const type& dimensions)
 {
   std::size_t index(0);
 

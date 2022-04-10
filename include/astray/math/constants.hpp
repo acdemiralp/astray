@@ -11,7 +11,7 @@ template <typename type>
 struct constants
 {
 static constexpr type c    = static_cast<type>(1);
-static constexpr type c_sq = static_cast<type>(std::pow(c, 2));
+static constexpr type c_sq = static_cast<type>(c * c);
 
 static constexpr type G    = static_cast<type>(1);
 static constexpr type _2G  = static_cast<type>(2) * G;

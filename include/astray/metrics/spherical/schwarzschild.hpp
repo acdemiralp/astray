@@ -16,7 +16,7 @@ class schwarzschild : public metric<coordinate_system::spherical, scalar_type, v
 public:
   using constants = constants<scalar_type>;
 
-  thrust::optional<termination_reason> check_termination  (const vector_type& position, const vector_type& direction) const override
+  __device__ thrust::optional<termination_reason> check_termination  (const vector_type& position, const vector_type& direction) const override
   {
     const auto rs = constants::_2G * mass / constants::c_sq;
     if (position[1] < static_cast<scalar_type>(0) || 
@@ -25,7 +25,7 @@ public:
     return thrust::nullopt;
   }
 
-  christoffel_symbols_type             christoffel_symbols(const vector_type& position) const override
+  __device__ christoffel_symbols_type             christoffel_symbols(const vector_type& position) const override
   {
     const auto rs    = constants::_2G * mass / constants::c_sq;
     const auto r     = position[1];

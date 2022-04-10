@@ -173,7 +173,7 @@ public:
     const auto end   = clock::now();
 
     auto record = std::find_if(session_.records.begin(), session_.records.end(),
-      [&name] (const record<type>& iteratee) { return iteratee.name == name; });
+      [&name] (const ast::record<type>& iteratee) { return iteratee.name == name; });
     if (record == session_.records.end())
     {
       session_.records.push_back({name, {std::vector<type>(iterations_)}});

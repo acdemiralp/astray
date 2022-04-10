@@ -14,9 +14,9 @@ class communicator
 {
 public:
 #ifdef ASTRAY_USE_MPI
-  communicator           (std::int32_t native = MPI_COMM_WORLD)
+  explicit communicator  (const std::int32_t native = MPI_COMM_WORLD)
 #else
-  communicator           (std::int32_t native = 0)
+  explicit communicator  (const std::int32_t native = 0)
 #endif
   : native_(native)
   {
@@ -38,7 +38,7 @@ public:
 #endif
   }
 
-  const     std::int32_t rank   () const
+  std::int32_t           rank   () const
   {
     std::int32_t result(0);
 #ifdef ASTRAY_USE_MPI
@@ -46,7 +46,7 @@ public:
 #endif
     return result;
   }
-  const     std::int32_t size   () const
+  std::int32_t           size   () const
   {
     std::int32_t result(1);
 #ifdef ASTRAY_USE_MPI

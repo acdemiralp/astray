@@ -2,14 +2,11 @@
 
 #include <algorithm>
 #include <array>
-#include <functional>
 #include <cmath>
 #include <complex>
-#include <type_traits>
 
 #include <astray/math/ode/algebra/quantity_operations.hpp>
 #include <astray/math/ode/error/error_evaluation.hpp>
-#include <astray/math/ode/error/extended_result.hpp>
 #include <astray/math/ode/tableau/tableau_traits.hpp>
 #include <astray/parallel/thrust.hpp>
 

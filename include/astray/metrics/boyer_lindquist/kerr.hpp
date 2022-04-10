@@ -16,11 +16,11 @@ class kerr : public metric<coordinate_system::boyer_lindquist, scalar_type, vect
 public:
   using constants = constants<scalar_type>;
 
-  scalar_type                          coordinate_system_parameter() const override
+  __device__ scalar_type                          coordinate_system_parameter() const override
   {
     return angular_momentum / mass;
   }
-  thrust::optional<termination_reason> check_termination          (const vector_type& position, const vector_type& direction) const override
+  __device__ thrust::optional<termination_reason> check_termination          (const vector_type& position, const vector_type& direction) const override
   {
     const auto event_horizon = mass + std::sqrt(static_cast<scalar_type>(std::pow(mass, 2)) - static_cast<scalar_type>(std::pow(angular_momentum, 2)));
     if (position[1] < static_cast<scalar_type>(0) || position[1] <= (static_cast<scalar_type>(1) + constants::eps) * event_horizon)
@@ -28,7 +28,7 @@ public:
     return thrust::nullopt;
   }
 
-  christoffel_symbols_type             christoffel_symbols        (const vector_type& position) const override
+  __device__ christoffel_symbols_type             christoffel_symbols        (const vector_type& position) const override
   {
     const auto t1   = static_cast<scalar_type>(std::pow(position[1], 2));
     const auto t2   = mass * position[1];

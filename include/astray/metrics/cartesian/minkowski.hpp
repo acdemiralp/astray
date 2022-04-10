@@ -11,7 +11,7 @@ template <
 class minkowski : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
+  __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     christoffel_symbols_type symbols;
     symbols.setZero();

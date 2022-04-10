@@ -129,8 +129,8 @@ public:
   void append(image<vector3<std::uint8_t>>& frame)
   {
 #ifdef ASTRAY_USE_FFMPEG
-    std::uint8_t* data     [8] {&frame.data[0][0]};
-    std::int32_t  line_size[8] {frame.size[0] * sizeof(vector3<std::uint8_t>)};
+    std::uint8_t*      data     [8] {&frame.data[0][0]};
+    const std::int32_t line_size[8] {static_cast<std::int32_t>(frame.size[0] * sizeof(vector3<std::uint8_t>))};
     sws_scale(sws_context_, data, line_size, 0, frame.size[1], frame_->data, frame_->linesize);
 
     AVPacket packet;

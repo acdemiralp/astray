@@ -23,24 +23,44 @@ template <typename metric_type, typename motion_type>
 class ray_tracer
 {
 public:
-  using scalar_type          = typename metric_type::scalar_type;
-  using vector_type          = typename metric_type::vector_type;
+  using scalar_type          = typename motion_type::scalar_type;
+  using vector_type          = vector4<scalar_type>;
 
   using observer_type        = observer<scalar_type>;
 
   using pixel_type           = vector3<std::uint8_t>;
   using image_type           = image<pixel_type>;
-  using image_size_type      = typename image_type::size_type;
+  using image_size_type      = image_type::size_type;
 
   using bounds_type          = typename motion_type::bounds_type;
   using error_evaluator_type = typename motion_type::error_evaluator_type;
 
   using partitioner_type     = partitioner<2, std::int32_t, image_size_type, true>;
 
-  ray_tracer           (
+  struct device_data
+  {
+    vector_type          observer_position ;
+    pixel_type*          background        ;
+    image_size_type      background_size   ;
+
+    metric_type          metric            ;
+    std::size_t          iterations        ;
+    scalar_type          lambda_step_size  ;
+    scalar_type          lambda            ;
+    bounds_type          bounds            ;
+    //error_evaluator_type error_evaluator   ;
+    
+    pixel_type*          result            ;
+    image_size_type      result_size       ;
+    image_size_type      result_offset     ;
+
+    bool                 debug             ;
+  };
+
+  explicit ray_tracer  (
     const image_size_type&      image_size       = {1920, 1080},
     const metric_type&          metric           = metric_type(),
-    const std::size_t           iterations       = static_cast<scalar_type>(1e3),
+    const std::size_t           iterations       = static_cast<std::size_t>(1e3),
     const scalar_type           lambda_step_size = static_cast<scalar_type>(1e-3),
     const scalar_type           lambda           = static_cast<scalar_type>(0),
     const bounds_type&          bounds           = thrust::nullopt,
@@ -57,7 +77,7 @@ public:
   , partitioner       (communicator.rank(), communicator.size(), image_size)
 #ifdef ASTRAY_USE_MPI
   , pixel_data_type   (mpi::data_type(MPI_UNSIGNED_CHAR), 3)
-  , subarray_data_type(pixel_data_type   , partitioner.domain_size(), partitioner.block_size(), image_size_type::Zero(), true)
+  , subarray_data_type(pixel_data_type   , partitioner.domain_size(), partitioner.block_size(), image_size_type::Zero().eval(), true)
   , resized_data_type (subarray_data_type, 0, partitioner.block_size()[0] * sizeof(pixel_type))
 #endif
   , debug             (debug)
@@ -75,26 +95,6 @@ public:
   {
     using constants = constants<scalar_type>;
 
-    struct device_data
-    {
-      vector_type          observer_position ;
-      pixel_type*          background        ;
-      image_size_type      background_size   ;
-
-      metric_type          metric            ;
-      std::size_t          iterations        ;
-      scalar_type          lambda_step_size  ;
-      scalar_type          lambda            ;
-      bounds_type          bounds            ;
-      error_evaluator_type error_evaluator   ;
-      
-      pixel_type*          result            ;
-      image_size_type      result_size       ;
-      image_size_type      result_offset     ;
-
-      bool                 debug             ;
-    };
-
     image_type                         result           (partitioner.block_size());
     thrust::device_vector<pixel_type>  device_background(background.data);
     thrust::device_vector<pixel_type>  device_result    (result    .data);
@@ -109,7 +109,7 @@ public:
       lambda_step_size              ,
       lambda                        ,
       bounds                        ,
-      error_evaluator               ,
+      //error_evaluator               ,
 
       device_result.data().get()    ,
       result.size                   ,
@@ -122,7 +122,7 @@ public:
     thrust::for_each(
       thrust::make_zip_iterator(make_tuple(thrust::counting_iterator<std::size_t>(0)          , rays.begin())),
       thrust::make_zip_iterator(make_tuple(thrust::counting_iterator<std::size_t>(rays.size()), rays.end  ())),
-      [data = data.data().get()] (const auto& iteratee)
+      [data = data.data().get()] __device__ (const auto& iteratee)
       {
         auto  index = thrust::get<0>(iteratee);
         auto& ray   = thrust::get<1>(iteratee);
@@ -133,7 +133,7 @@ public:
         else
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
 
-        auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds, data->error_evaluator);
+        auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
 
         if (termination == thrust::nullopt || termination == termination_reason::out_of_bounds)
         {
@@ -146,7 +146,7 @@ public:
 
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
 
-          image_size_type background_index(
+          const image_size_type background_index(
             std::floor((ray.position[3] - constants::eps) / constants::_2pi * static_cast<scalar_type>(data->background_size[0])),
             std::floor((ray.position[2] - constants::eps) / constants::pi   * static_cast<scalar_type>(data->background_size[1])));
 

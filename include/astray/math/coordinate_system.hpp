@@ -18,7 +18,7 @@ enum class coordinate_system
 };
 
 template <coordinate_system system, typename type>
-void wrap_angles(type& value)
+__device__ constexpr void wrap_angles(type& value)
 {
   if      constexpr (system == coordinate_system::boyer_lindquist)
   {
@@ -41,7 +41,7 @@ void wrap_angles(type& value)
 }
 
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
-void convert    (type& value)
+__device__ constexpr void convert    (type& value)
 {
   if        constexpr (source == coordinate_system::cartesian)
   {
@@ -131,7 +131,7 @@ void convert    (type& value)
   }
 }
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
-void convert    (type& value, const scalar free_parameter)
+__device__ constexpr void convert    (type& value, const scalar free_parameter)
 {
   if        constexpr (source == coordinate_system::boyer_lindquist)
   {
@@ -153,13 +153,13 @@ void convert    (type& value, const scalar free_parameter)
     }
     else if constexpr (target == coordinate_system::cylindrical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
   }
   else if   constexpr (source == coordinate_system::cartesian)
@@ -205,13 +205,13 @@ void convert    (type& value, const scalar free_parameter)
   {
     if      constexpr (target == coordinate_system::boyer_lindquist)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
     else if constexpr (target == coordinate_system::prolate_spheroidal)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
   }
   else if   constexpr (source == coordinate_system::prolate_spheroidal)
@@ -231,38 +231,38 @@ void convert    (type& value, const scalar free_parameter)
     }
     else if constexpr (target == coordinate_system::cylindrical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
   }
   else if   constexpr (source == coordinate_system::spherical)
   {
     if      constexpr (target == coordinate_system::boyer_lindquist)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
     else if constexpr (target == coordinate_system::prolate_spheroidal)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
   }
 }
 
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
-void convert_ray(type& value)
+__device__ constexpr void convert_ray(type& value)
 {
   if        constexpr (source == coordinate_system::cartesian)
   {
     if      constexpr (target == coordinate_system::cylindrical)
     {
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
 
       const scalar& r = value.position[1];
       const scalar& p = value.position[2];
@@ -278,7 +278,7 @@ void convert_ray(type& value)
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
       
       const scalar& r = value.position[1];
       const scalar& t = value.position[2];
@@ -308,13 +308,13 @@ void convert_ray(type& value)
         0, std::sin(p),  r * std::cos(p), 0,
         0,           0,                0, 1;
 
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
 
       value.direction = transform * value.direction;
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
 
       const scalar& r = value.position[1];
       const scalar& t = value.position[2];
@@ -344,7 +344,7 @@ void convert_ray(type& value)
         0, std::sin(t) * std::sin(p),  r * std::cos(t) * std::sin(p),  r * std::sin(t) * std::cos(p),
         0, std::cos(t)              , -r * std::sin(t)              ,                              0;
 
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
 
       value.direction = transform * value.direction;
     }
@@ -360,14 +360,14 @@ void convert_ray(type& value)
         0,           0,                0, 1,
         0, std::cos(t), -r * std::sin(t), 0;
 
-      convert<source, target, type, scalar>(value.position);
+      convert<source, target>(value.position);
 
       value.direction = transform * value.direction;
     }
   }
 }
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
-void convert_ray(type& value, const scalar free_parameter)
+__device__ constexpr void convert_ray(type& value, const scalar free_parameter)
 {
   if        constexpr (source == coordinate_system::boyer_lindquist)
   {
@@ -385,26 +385,26 @@ void convert_ray(type& value, const scalar free_parameter)
         0, r * std::sin(t) * std::sin(p) / k, std::cos(t) * std::sin(p) * k,  std::sin(t) * std::cos(p) * k,
         0,                       std::cos(t),              -r * std::sin(t),                              0;
 
-      convert<source, target, type, scalar>(value.position, free_parameter);
+      convert<source, target>(value.position, free_parameter);
 
       value.direction = transform * value.direction;
     }
     else if constexpr (target == coordinate_system::cylindrical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
   }
   else if   constexpr (source == coordinate_system::cartesian)
   {
     if      constexpr (target == coordinate_system::boyer_lindquist)
     {
-      convert<source, target, type, scalar>(value.position, free_parameter);
+      convert<source, target>(value.position, free_parameter);
 
       const scalar& r = value.position[1];
       const scalar& t = value.position[2];
@@ -423,7 +423,7 @@ void convert_ray(type& value, const scalar free_parameter)
     }
     else if constexpr (target == coordinate_system::prolate_spheroidal)
     {
-      convert<source, target, type, scalar>(value.position, free_parameter);
+      convert<source, target>(value.position, free_parameter);
 
       const scalar& s = value.position[1];
       const scalar& t = value.position[2];
@@ -446,13 +446,13 @@ void convert_ray(type& value, const scalar free_parameter)
   {
     if      constexpr (target == coordinate_system::boyer_lindquist)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
     else if constexpr (target == coordinate_system::prolate_spheroidal)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
   }
   else if   constexpr (source == coordinate_system::prolate_spheroidal)
@@ -472,32 +472,32 @@ void convert_ray(type& value, const scalar free_parameter)
         0, -a * s * (static_cast<scalar>(std::pow(t, 2)) - 1) * std::sin(p) / k, -a * t * (static_cast<scalar>(std::pow(s, 2)) - 1) * std::sin(p) / k,  a * std::cos(p) * k,
         0,  a * t                                                              ,  a * s                                                              ,                    0;
 
-      convert<source, target, type, scalar>(value.position, free_parameter);
+      convert<source, target>(value.position, free_parameter);
 
       value.direction = transform * value.direction;
     }
     else if constexpr (target == coordinate_system::cylindrical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
     else if constexpr (target == coordinate_system::spherical)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value, free_parameter);
-      convert<coordinate_system::cartesian, target, type, scalar>(value);
+      convert<source, coordinate_system::cartesian>(value, free_parameter);
+      convert<coordinate_system::cartesian, target>(value);
     }
   }
   else if   constexpr (source == coordinate_system::spherical)
   {
     if      constexpr (target == coordinate_system::boyer_lindquist)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
     else if constexpr (target == coordinate_system::prolate_spheroidal)
     {
-      convert<source, coordinate_system::cartesian, type, scalar>(value);
-      convert<coordinate_system::cartesian, target, type, scalar>(value, free_parameter);
+      convert<source, coordinate_system::cartesian>(value);
+      convert<coordinate_system::cartesian, target>(value, free_parameter);
     }
   }
 }

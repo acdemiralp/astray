@@ -26,7 +26,7 @@ public:
   , communicator_size_(communicator_size)
   , domain_size_      (domain_size      )
   {
-    partitioner<dimensions, size_type, multi_size_type>::update();
+    partitioner<dimensions, size_type, multi_size_type, fortran_order>::update();
   }
   partitioner           (const partitioner&  that) = default;
   partitioner           (      partitioner&& temp) = default;

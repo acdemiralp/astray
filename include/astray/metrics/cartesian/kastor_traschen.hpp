@@ -16,12 +16,12 @@ class kastor_traschen : public metric<coordinate_system::cartesian, scalar_type,
 public:
   using constants = constants<scalar_type>;
 
-  thrust::optional<termination_reason> check_termination  (const vector_type& position, const vector_type& direction) const override
+  __device__ thrust::optional<termination_reason> check_termination  (const vector_type& position, const vector_type& direction) const override
   {
     return thrust::nullopt;
   }
 
-  christoffel_symbols_type             christoffel_symbols(const vector_type& position) const override
+  __device__ christoffel_symbols_type             christoffel_symbols(const vector_type& position) const override
   {
     const auto p1_2_p2_2 = static_cast<scalar_type>(std::pow(position[1], 2)) + static_cast<scalar_type>(std::pow(position[2], 2));
 

@@ -3,11 +3,9 @@
 #include <algorithm>
 #include <cmath>
 #include <complex>
-#include <type_traits>
 
 #include <astray/math/ode/algebra/quantity_operations.hpp>
 #include <astray/math/ode/error/error_evaluation.hpp>
-#include <astray/math/ode/error/extended_result.hpp>
 #include <astray/math/ode/tableau/tableau_traits.hpp>
 
 namespace ast

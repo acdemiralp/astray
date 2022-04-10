@@ -16,7 +16,7 @@ class goedel : public metric<coordinate_system::cartesian, scalar_type, vector_t
 public:
   using constants = constants<scalar_type>;
 
-  christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
+  __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto t1  = static_cast<scalar_type>(std::pow(alpha      , 2));
     const auto t3  = static_cast<scalar_type>(std::pow(position[1], 2));

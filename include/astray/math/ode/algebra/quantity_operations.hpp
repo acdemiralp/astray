@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <type_traits>
 
 #include <astray/math/ode/algebra/quantity_traits.hpp>
 
