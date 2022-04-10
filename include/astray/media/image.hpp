@@ -22,14 +22,14 @@ class image
 public:
   using storage_type = std::vector<type>;
   using size_type    = vector2<std::int32_t>;
-
+  
+  explicit image  (const size_type& size = {1, 1}, const type& value = type()) : data(size.prod(), value), size(size)
+  {
+    
+  }
   explicit image  (const std::filesystem::path& filepath)
   {
     load(filepath);
-  }
-  explicit image  (const size_type& size, const type& value = type()) : data(size.prod(), value), size(size)
-  {
-    
   }
   image           (const image&       that) = default;
   image           (      image&&      temp) = default;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 #ifdef ASTRAY_USE_MPI
 #include <mpi.h>
@@ -11,7 +12,7 @@ namespace ast::mpi
 class data_type
 {
 public:
-  data_type           (std::int32_t native, bool managed = false) 
+  data_type           (std::int32_t native = 0, bool managed = false) 
   : native_(native), managed_(managed)
   {
   
@@ -32,7 +33,8 @@ public:
     MPI_Type_commit        (&native_);
 #endif
   }
-  data_type           (const data_type&  that, const std::vector<std::int32_t>& sizes, const std::vector<std::int32_t>& sub_sizes, const std::vector<std::int32_t>& starts, const bool fortran_order = false)
+  template <typename type>
+  data_type           (const data_type&  that, const type& sizes, const type& sub_sizes, const type& starts, const bool fortran_order = false)
   : managed_(true)
   {
 #ifdef ASTRAY_USE_MPI
