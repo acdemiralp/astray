@@ -47,7 +47,7 @@ public:
     std::size_t          iterations        ;
     scalar_type          lambda_step_size  ;
     scalar_type          lambda            ;
-    bounds_type          bounds            ;
+    //bounds_type          bounds            ;
     //error_evaluator_type error_evaluator   ;
     
     pixel_type*          result            ;
@@ -108,7 +108,7 @@ public:
       iterations                    ,
       lambda_step_size              ,
       lambda                        ,
-      bounds                        ,
+      //bounds                        ,
       //error_evaluator               ,
 
       device_result.data().get()    ,
@@ -132,8 +132,8 @@ public:
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray, metric.coordinate_system_parameter());
         else
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
-      
-        const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
+
+        const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda); //, data->bounds, data->error_evaluator);
         
         if (termination == thrust::nullopt || termination == termination_reason::out_of_bounds)
         {
@@ -150,7 +150,7 @@ public:
             std::floor(ray.position[3] / constants::_2pi * static_cast<scalar_type>(data->background_size[0] - 1)),
             std::floor(ray.position[2] / constants::pi   * static_cast<scalar_type>(data->background_size[1] - 1)));
           
-          //data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
+          data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
         }
         
         if (data->debug)

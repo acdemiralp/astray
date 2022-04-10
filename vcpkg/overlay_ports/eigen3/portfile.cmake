@@ -5,7 +5,7 @@ vcpkg_from_gitlab(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO AliCanDemiralp/eigen
     REF cuda_tensor_fix
-    SHA512 ffe9dca9f54b3117df56c41b14e4c529cca3b7d4c5982dcc041731d7e6cd652b35ef8e3eb2b00190cd0e5bf7b7a8dfdab0e1b23a23e9c9f9f346ebc435001422
+    SHA512 b3f2ddf2cdbf8389bced3f2fb6cfb26e47f7e95c91c2a7cbc626beb1890c30216ebaf9c6090b172cfeb8688a4d10e4d30a7199c5c94e6cb1174ea3e20af309e3
     HEAD_REF master
 )
 
