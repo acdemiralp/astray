@@ -22,10 +22,9 @@ A performance-portable relativistic ray tracing library.
 - Compute the FTLE and the LCS of null geodesics.
 - Precompute the Christoffel symbols into a 4D image. Sample the image instead of computing the symbols to accelerate ray tracing.
 - More metrics and motions.
+- More tests.
 - Viewer application.
 - Documentation.
 
 ### Potential Issues
-- Check if rotations of the observer modify the environment correctly.
 - Check if error controllers are transmitted to the device correctly.
-- Complete the tests.
