@@ -9,9 +9,10 @@ include               (set_max_warning_level)
 set_max_warning_level ()
 
 ##################################################    Options     ##################################################
-option      (ASTRAY_BUILD_TESTS "Build tests (default: OFF)."                     OFF)
-option      (ASTRAY_USE_FFMPEG  "Use FFMPEG for video output (default: OFF)."     OFF)
-option      (ASTRAY_USE_MPI     "Use MPI for distributed compute (default: OFF)." OFF)
+option      (ASTRAY_BUILD_APPLICATIONS "Build the example applications (default: OFF)."  OFF)
+option      (ASTRAY_BUILD_TESTS        "Build the tests (default: OFF)."                 OFF)
+option      (ASTRAY_USE_FFMPEG         "Use FFMPEG for video output (default: OFF)."     OFF)
+option      (ASTRAY_USE_MPI            "Use MPI for distributed compute (default: OFF)." OFF)
 
 set         (ASTRAY_DEVICE_SYSTEM OMP CACHE STRING "Device system (default: OMP).")
 set_property(CACHE ASTRAY_DEVICE_SYSTEM PROPERTY STRINGS CPP CUDA OMP TBB)
@@ -90,6 +91,25 @@ target_link_libraries     (${PROJECT_NAME}_ PUBLIC ${PROJECT_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME}_ PUBLIC ${PROJECT_COMPILE_DEFINITIONS})
 target_compile_options    (${PROJECT_NAME}_ PUBLIC ${PROJECT_COMPILE_OPTIONS})
 set_target_properties     (${PROJECT_NAME}_ PROPERTIES LINKER_LANGUAGE CXX)
+
+##################################################  Applications  ##################################################
+if(ASTRAY_BUILD_APPLICATIONS)
+  file(GLOB PROJECT_APPLICATION_CPPS applications/*.cu)
+
+  # Hack for compiling .cu files as .cpp.
+  if   (NOT ${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
+    set_source_files_properties(${PROJECT_APPLICATION_CPPS} PROPERTIES LANGUAGE CXX)
+  endif()
+
+  foreach(_SOURCE ${PROJECT_APPLICATION_CPPS})
+    get_filename_component(_NAME ${_SOURCE} NAME_WE)
+    add_executable        (${_NAME} ${_SOURCE})
+    target_link_libraries (${_NAME} ${PROJECT_NAME})
+    target_link_libraries (${_NAME} ${PROJECT_LIBRARIES})
+    set_property          (TARGET ${_NAME} PROPERTY FOLDER applications)
+    assign_source_group   (${_SOURCE})
+  endforeach()
+endif()
 
 ##################################################    Testing     ##################################################
 if(ASTRAY_BUILD_TESTS)
