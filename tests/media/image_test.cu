@@ -11,10 +11,10 @@ TEST_CASE("ast::image")
   for (auto x = 0; x < image.size[0]; ++x)
     for (auto y = 0; y < image.size[1]; ++y)
       image.at({x, y})          = pixel_type(static_cast<std::uint8_t>(x), static_cast<std::uint8_t>(y), 128);
-  image.save("../data/outputs/image_test.png");
+  image.save("../data/outputs/tests/image_test.png");
 
   image_type other;
-  other.load("../data/outputs/image_test.png");
+  other.load("../data/outputs/tests/image_test.png");
   for (auto x = 0; x < other.size[0]; ++x)
     for (auto y = 0; y < other.size[1]; ++y)
       REQUIRE(other.at({x, y}) == pixel_type(static_cast<std::uint8_t>(x), static_cast<std::uint8_t>(y), 128));

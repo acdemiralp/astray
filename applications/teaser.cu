@@ -25,7 +25,7 @@ void make_teaser(const std::string& name, const teaser_settings& settings)
 {
   using ray_tracer_type = ast::ray_tracer<metric_type, geodesic_type>;
 
-  auto ray_tracer                           = ray_tracer_type(settings.image_size, metric_type(), settings.iterations, settings.step_size, 0.0, {}, {}, true);
+  auto ray_tracer                           = ray_tracer_type(settings.image_size, metric_type(), settings.iterations, settings.step_size);
   ray_tracer.background                     = settings.background;
   ray_tracer.observer.projection            = ast::perspective_projection<scalar_type> {settings.fov, static_cast<scalar_type>(settings.image_size[0]) / settings.image_size[1]};
   ray_tracer.observer.transform.translation = settings.position;
@@ -33,7 +33,7 @@ void make_teaser(const std::string& name, const teaser_settings& settings)
 
   const auto image = ray_tracer.render_frame();
   if (ray_tracer.communicator.rank() == 0)
-    image.save("../data/outputs/teaser_" + name + ".png");
+    image.save("../data/outputs/applications/teaser_" + name + ".png");
 }
 
 std::int32_t main(std::int32_t argc, char** argv)

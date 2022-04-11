@@ -7,7 +7,7 @@ TEST_CASE("ast::video")
   using pixel_type = ast::vector3<std::uint8_t>;
   using frame_type = ast::image<pixel_type>;
 
-  ast::video video("../data/outputs/video_test.mp4", {256, 256}, 60);
+  ast::video video("../data/outputs/tests/video_test.mp4", {256, 256}, 60);
   frame_type frame({256, 256}, pixel_type(0, 0, 0));
 
   for (auto i = 0; i < 256; ++i)

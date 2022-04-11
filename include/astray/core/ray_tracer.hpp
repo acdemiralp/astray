@@ -83,7 +83,15 @@ public:
   , debug             (debug)
   {
     if constexpr (shared_device == shared_device_type::cuda)
-      cudaDeviceSetLimit(cudaLimitMallocHeapSize, static_cast<std::size_t>(2e+8));
+    {
+      cudaDeviceReset();
+
+      std::size_t target_heap_size = 2e+8;
+      std::size_t heap_size        = 0;
+      cudaDeviceGetLimit(&heap_size, cudaLimitMallocHeapSize);
+      if (heap_size < target_heap_size)
+        cudaDeviceSetLimit(cudaLimitMallocHeapSize, target_heap_size);
+    }
   }
   ray_tracer           (const ray_tracer&  that) = delete ;
   ray_tracer           (      ray_tracer&& temp) = default;
@@ -126,7 +134,8 @@ public:
       {
         auto  index = thrust::get<0>(iteratee);
         auto& ray   = thrust::get<1>(iteratee);
-        auto  metric(data->metric); // A copy is necessary for correct creation of virtual function table.
+        
+        metric_type metric(data->metric); // A copy is necessary for correct creation of virtual function table.
 
         if constexpr (metric_type::coordinate_system() == coordinate_system::boyer_lindquist || metric_type::coordinate_system() == coordinate_system::prolate_spheroidal)
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray, metric.coordinate_system_parameter());
@@ -143,7 +152,7 @@ public:
             convert<metric_type::coordinate_system(), coordinate_system::cartesian>(ray.position);
 
           ray.position -= data->observer_position; // Environment map is relative to observer.
-
+          
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
           
           const image_size_type background_index(
@@ -163,7 +172,7 @@ public:
             data->result[index] = pixel_type(128, 128, 255);
         }
       });
-    
+
     thrust::copy(device_result.begin(), device_result.end(), result.data.begin());
     if constexpr (shared_device == shared_device_type::cuda)
       cudaDeviceSynchronize();

@@ -18,5 +18,5 @@ TEST_CASE("ast::partitioner")
       for (std::int32_t y = 0; y < partitioner.block_size()[1]; ++y)
         domain.at({partitioner.rank_offset()[0] + x, partitioner.rank_offset()[1] + y}) = pixel_type::Constant(static_cast<std::uint8_t>(255.0 * i / ranks));
   }
-  domain.save("../data/outputs/partitioner_test.jpg");
+  domain.save("../data/outputs/tests/partitioner_test.jpg");
 }

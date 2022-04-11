@@ -28,7 +28,7 @@ TEST_CASE("ast::observer")
         auto& ray = rays_host[ast::ravel_multi_index<image_size_type, true>({x, y}, size)];
         image.at({x, y}) = (ray.position.tail(3).cwiseAbs() * 255).cast<std::uint8_t>();
       }
-    image.save("../data/outputs/observer_test_perspective_positions.jpg");
+    image.save("../data/outputs/tests/observer_test_perspective_positions.jpg");
     
     for (auto x = 0; x < size[0]; ++x)
       for (auto y = 0; y < size[1]; ++y)
@@ -36,7 +36,7 @@ TEST_CASE("ast::observer")
         auto& ray = rays_host[ast::ravel_multi_index<image_size_type, true>({x, y}, size)];
         image.at({x, y}) = (ray.direction.tail(3).cwiseAbs() * 255).cast<std::uint8_t>();
       }
-    image.save("../data/outputs/observer_test_perspective_directions.jpg");
+    image.save("../data/outputs/tests/observer_test_perspective_directions.jpg");
   }
 
   {
@@ -54,7 +54,7 @@ TEST_CASE("ast::observer")
         auto& ray = rays_host[ast::ravel_multi_index<image_size_type, true>({x, y}, size)];
         image.at({x, y}) = (ray.position.tail(3).cwiseAbs() * 255).cast<std::uint8_t>();
       }
-    image.save("../data/outputs/observer_test_orthographic_positions.jpg");
+    image.save("../data/outputs/tests/observer_test_orthographic_positions.jpg");
     
     for (auto x = 0; x < size[0]; ++x)
       for (auto y = 0; y < size[1]; ++y)
@@ -62,6 +62,6 @@ TEST_CASE("ast::observer")
         auto& ray = rays_host[ast::ravel_multi_index<image_size_type, true>({x, y}, size)];
         image.at({x, y}) = (ray.direction.tail(3).cwiseAbs() * 255).cast<std::uint8_t>();
       }
-    image.save("../data/outputs/observer_test_orthographic_directions.jpg");
+    image.save("../data/outputs/tests/observer_test_orthographic_directions.jpg");
   }
 }

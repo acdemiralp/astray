@@ -28,8 +28,8 @@ TEST_CASE("ast::ray_tracer")
 
   const auto image = ray_tracer.render_frame();
   if (ray_tracer.communicator.rank() == 0)
-    image.save("../data/outputs/ray_tracer_test.jpg");
+    image.save("../data/outputs/tests/ray_tracer_test.jpg");
   for (auto i = 1; i < ray_tracer.communicator.size(); ++i)
     if (ray_tracer.communicator.rank() == i)
-      image.save("../data/outputs/ray_tracer_test_rank" + std::to_string(i) + ".jpg");
+      image.save("../data/outputs/tests/ray_tracer_test_rank" + std::to_string(i) + ".jpg");
 }

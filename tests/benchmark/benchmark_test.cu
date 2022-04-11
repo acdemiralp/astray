@@ -13,7 +13,7 @@ TEST_CASE("ast::benchmark")
     std::iota(vector.begin(), vector.end(), 0);
     vector.clear();
   }, static_cast<std::size_t>(10));
-  record.to_csv("../data/outputs/benchmark_test_micro.csv");
+  record.to_csv("../data/outputs/tests/benchmark_test_micro.csv");
 
   auto session = ast::benchmark        <double, std::milli, std::chrono::high_resolution_clock> ([ ] (auto& recorder)
   {
@@ -31,7 +31,7 @@ TEST_CASE("ast::benchmark")
       vector.clear();
     });
   }, static_cast<std::size_t>(10));
-  session.to_csv("../data/outputs/benchmark_test_macro.csv");
+  session.to_csv("../data/outputs/tests/benchmark_test_macro.csv");
 
   if constexpr (ast::distributed_device == ast::distributed_device_type::mpi)
   {
@@ -56,6 +56,6 @@ TEST_CASE("ast::benchmark")
     }, static_cast<std::size_t>(10));
 
     if (communicator.rank() == 0)
-      mpi_session.to_csv("../data/outputs/benchmark_test_mpi.csv");
+      mpi_session.to_csv("../data/outputs/tests/benchmark_test_mpi.csv");
   }
 }

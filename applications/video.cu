@@ -19,7 +19,7 @@ std::int32_t main(std::int32_t argc, char** argv)
   
   std::optional<ast::video> video(std::nullopt);
   if (ray_tracer.communicator.rank() == 0)
-    video.emplace("../data/outputs/video.mp4", image_size, 60);
+    video.emplace("../data/outputs/applications/video.mp4", image_size, 60);
   
   constexpr auto frames(360);
   for (auto i = 0; i < frames; ++i)

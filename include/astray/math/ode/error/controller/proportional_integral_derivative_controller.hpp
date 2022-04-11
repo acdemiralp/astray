@@ -19,7 +19,7 @@ struct proportional_integral_derivative_controller
   template <typename problem_type, typename extended_result_type>
   __device__ constexpr error_evaluation<type> evaluate(const problem_type& problem, const type step_size, const extended_result_type& result)
   {
-    using operations = quantity_operations<std::remove_cv_t<std::remove_reference_t<typename problem_type::value_type>>>;
+    using operations = quantity_operations<typename extended_result_type::type>;
 
     type squared_sum(0);
     operations::for_each([&] (const auto& p, const auto& r, const auto& e)
