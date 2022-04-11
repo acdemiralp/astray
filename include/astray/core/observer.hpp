@@ -41,8 +41,7 @@ public:
     image_size_type local_offset     ;
     scalar_type     coordinate_time  ;
   };
-    
-
+  
   template <typename image_size_type>
   thrust::device_vector<ray_type> generate_rays(
     const image_size_type& global_size ,

@@ -14,17 +14,17 @@ class geodesic
 public:
   using scalar_type          = scalar_type_;
   using tableau_type         = tableau_type_;
-  using bounds_type          = thrust::optional<aabb4<scalar_type>>;
+  using bounds_type          = aabb4<scalar_type>;
   using error_evaluator_type = error_evaluator_type_;
 
   template <typename ray_type, typename metric_type>
-  __device__ static constexpr thrust::optional<termination_reason> integrate(
+  __device__ static constexpr termination_reason integrate(
     ray_type&                   ray             ,
     const metric_type&          metric          ,
     const std::size_t           iterations      , 
     const scalar_type           lambda_step_size, 
     const scalar_type           lambda          = static_cast<scalar_type>(0),
-    const bounds_type&          bounds          = thrust::nullopt,
+    const bounds_type&          bounds          = bounds_type(),
     const error_evaluator_type& error_evaluator = error_evaluator_type())
   {
     using value_type    = vector<scalar_type, 8>;
@@ -57,15 +57,16 @@ public:
     {
       ++iterator;
 
-      if (auto termination = metric.check_termination(ray.position, ray.direction))
+      auto termination = metric.check_termination(ray.position, ray.direction);
+      if (termination != termination_reason::none)
         return termination;
-      if (bounds && !bounds->contains(ray.position))
+      if (!bounds.isEmpty() && !bounds.contains(ray.position))
         return termination_reason::out_of_bounds;
       if (ray.position.hasNaN() || ray.direction.hasNaN())
         return termination_reason::numeric_error;
     }
         
-    return thrust::nullopt;
+    return termination_reason::none;
   }
 };
 }

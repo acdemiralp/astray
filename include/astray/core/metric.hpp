@@ -17,20 +17,20 @@ class metric
 public:
   virtual ~metric() = default;
 
-  static constexpr coordinate_system                      coordinate_system          ()
+  static constexpr coordinate_system          coordinate_system          ()
   {
     return system;
   }
   
-  __device__ virtual scalar_type                          coordinate_system_parameter() const
+  __device__ virtual scalar_type              coordinate_system_parameter() const
   {
     return scalar_type(0);
   }
-  __device__ virtual thrust::optional<termination_reason> check_termination          (const vector_type& position, const vector_type& direction) const
+  __device__ virtual termination_reason       check_termination          (const vector_type& position, const vector_type& direction) const
   {
-    return thrust::nullopt;
+    return termination_reason::none;
   }
   
-  __device__ virtual christoffel_symbols_type             christoffel_symbols        (const vector_type& position) const = 0;
+  __device__ virtual christoffel_symbols_type christoffel_symbols        (const vector_type& position) const = 0;
 };
 }

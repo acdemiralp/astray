@@ -47,7 +47,7 @@ public:
     std::size_t          iterations        ;
     scalar_type          lambda_step_size  ;
     scalar_type          lambda            ;
-    //bounds_type          bounds            ;
+    bounds_type          bounds            ;
     //error_evaluator_type error_evaluator   ;
     
     pixel_type*          result            ;
@@ -63,7 +63,7 @@ public:
     const std::size_t           iterations       = static_cast<std::size_t>(1e3),
     const scalar_type           lambda_step_size = static_cast<scalar_type>(1e-3),
     const scalar_type           lambda           = static_cast<scalar_type>(0),
-    const bounds_type&          bounds           = thrust::nullopt,
+    const bounds_type&          bounds           = bounds_type(),
     const error_evaluator_type& error_evaluator  = error_evaluator_type(),
     const bool                  debug            = false)
   // Integration parameters.
@@ -94,7 +94,7 @@ public:
   image<vector3<std::uint8_t>> render_frame()
   {
     using constants = constants<scalar_type>;
-
+    
     image_type                         result           (partitioner.block_size());
     thrust::device_vector<pixel_type>  device_background(background.data);
     thrust::device_vector<pixel_type>  device_result    (result    .data);
@@ -108,7 +108,7 @@ public:
       iterations                    ,
       lambda_step_size              ,
       lambda                        ,
-      //bounds                        ,
+      bounds                        ,
       //error_evaluator               ,
 
       device_result.data().get()    ,
@@ -117,7 +117,7 @@ public:
 
       debug
     }});
-
+    
     auto rays = observer.generate_rays(partitioner.domain_size(), partitioner.block_size(), partitioner.rank_offset());
     thrust::for_each(
       thrust::make_zip_iterator(make_tuple(thrust::counting_iterator<std::size_t>(0)          , rays.begin())),
@@ -133,9 +133,9 @@ public:
         else
           convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
 
-        const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda); //, data->bounds, data->error_evaluator);
+        const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
         
-        if (termination == thrust::nullopt || termination == termination_reason::out_of_bounds)
+        if (termination == termination_reason::none || termination == termination_reason::out_of_bounds)
         {
           if constexpr (metric_type::coordinate_system() == coordinate_system::boyer_lindquist || metric_type::coordinate_system() == coordinate_system::prolate_spheroidal)
             convert<metric_type::coordinate_system(), coordinate_system::cartesian>(ray.position, metric.coordinate_system_parameter());
@@ -163,7 +163,7 @@ public:
             data->result[index] = pixel_type(128, 128, 255);
         }
       });
-
+    
     thrust::copy(device_result.begin(), device_result.end(), result.data.begin());
     if constexpr (shared_device == shared_device_type::cuda)
       cudaDeviceSynchronize();
@@ -181,7 +181,7 @@ public:
         result         .data.data(), static_cast<std::int32_t>(result.data.size()), pixel_data_type  ,
         gathered_result.data.data(), counts.data(), displacements.data()          , resized_data_type);
 
-      if (partitioner.communicator_rank() != 0)
+      if (communicator.rank() != 0)
         return result; // Workers return their partial results.
       return gathered_result;
     }

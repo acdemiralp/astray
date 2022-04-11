@@ -3,7 +3,6 @@
 #include <thrust/iterator/counting_iterator.h>
 #include <thrust/device_vector.h>
 #include <thrust/for_each.h>
-#include <thrust/optional.h>
 
 #ifdef __CUDACC__
 #include <nvfunctional>
