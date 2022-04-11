@@ -53,7 +53,7 @@ struct record
     std::ofstream stream(filepath);
     stream << "name,";
     for (auto i = 0; i < values.size(); ++i)
-      stream << "iteration " << i << ",";
+      stream << "run_" << i << ",";
     stream << "mean,variance,standard deviation\n";
     stream << to_string();
   }
@@ -84,7 +84,7 @@ struct session
     std::ofstream stream(filepath);
     stream << "name,";
     for (auto i = 0; i < records[0].values.size(); ++i)
-      stream << "iteration " << i << ",";
+      stream << "run_" << i << ",";
     stream << "mean,variance,standard deviation\n";
     stream << to_string();
   }
@@ -137,7 +137,7 @@ public:
     std::ofstream stream(filepath);
     stream << "rank,name,";
     for (auto i = 0; i < session<type>::records[0].values.size(); ++i)
-      stream << "iteration " << i << ",";
+      stream << "run_" << i << ",";
     stream << "mean,variance,standard deviation\n";
     stream << to_string();
   }
@@ -151,7 +151,7 @@ protected:
 };
 #endif
 
-template <typename type, typename period, typename clock = std::chrono::high_resolution_clock>
+template <typename type, typename period, typename clock>
 class  session_recorder
 {
 public:
@@ -177,7 +177,7 @@ public:
     if (record == session_.records.end())
     {
       session_.records.push_back({name, {std::vector<type>(iterations_)}});
-      record = session_.records.back();
+      record = std::prev(session_.records.end());
     }
     record->values[index_] = std::chrono::duration<type, period>(end - start).count();
   }
@@ -188,10 +188,10 @@ protected:
   session<type>&    session_   ;
 };
 
-template<typename type = double, typename period = std::milli, typename clock = std::chrono::high_resolution_clock>
+template<typename type, typename period, typename clock>
 record<type>      benchmark    (const std::function<void()>&                                       function, const std::size_t iterations = 1)
 {
-  record<type> record {"", std::vector<type>(iterations)};
+  record<type> record {"benchmark", std::vector<type>(iterations)};
   for (auto i = 0; i < iterations; ++i)
   {
     const auto start = clock::now();
@@ -201,7 +201,7 @@ record<type>      benchmark    (const std::function<void()>&                    
   }
   return record;
 }
-template<typename type = double, typename period = std::milli, typename clock = std::chrono::high_resolution_clock>
+template<typename type, typename period, typename clock>
 session<type>     benchmark    (const std::function<void(session_recorder<type, period, clock>&)>& function, const std::size_t iterations = 1)
 {
   session<type> session;
@@ -214,7 +214,7 @@ session<type>     benchmark    (const std::function<void(session_recorder<type, 
 }
 
 #ifdef ASTRAY_USE_MPI
-template<typename type = double, typename period = std::milli, typename clock = std::chrono::high_resolution_clock>
+template<typename type, typename period, typename clock>
 mpi_session<type> benchmark_mpi(const std::function<void(session_recorder<type, period, clock>&)>& function, const std::size_t iterations = 1, 
   const MPI_Comm communicator = MPI_COMM_WORLD, const std::int32_t master_rank = 0)
 {
@@ -224,6 +224,7 @@ mpi_session<type> benchmark_mpi(const std::function<void(session_recorder<type, 
     session_recorder<type, period, clock> recorder(i, iterations, session);
     function(recorder);
   }
+  session.gather();
   return session;
 }
 #endif
