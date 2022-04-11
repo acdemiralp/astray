@@ -49,12 +49,12 @@ public:
     scalar_type          lambda            ;
     bounds_type          bounds            ;
     //error_evaluator_type error_evaluator   ;
+    bool                 debug             ;
     
     pixel_type*          result            ;
     image_size_type      result_size       ;
     image_size_type      result_offset     ;
 
-    bool                 debug             ;
   };
 
   explicit ray_tracer  (
@@ -118,12 +118,11 @@ public:
       lambda                        ,
       bounds                        ,
       //error_evaluator               ,
+      debug                         ,
 
       device_result.data().get()    ,
       result.size                   ,
-      partitioner.rank_offset()     ,
-
-      debug
+      partitioner.rank_offset()
     }});
     
     auto rays = observer.generate_rays(partitioner.domain_size(), partitioner.block_size(), partitioner.rank_offset());
@@ -209,6 +208,7 @@ public:
   scalar_type          lambda            ;
   bounds_type          bounds            ;
   error_evaluator_type error_evaluator   ;
+  bool                 debug             ;
 
   // Parallelization.
   mpi::environment     environment       ;
@@ -217,8 +217,5 @@ public:
   mpi::data_type       pixel_data_type   ;
   mpi::data_type       subarray_data_type;
   mpi::data_type       resized_data_type ;
-
-  // Debugging.
-  bool                 debug             ;
 };
 }
