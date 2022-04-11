@@ -3,25 +3,23 @@
 
 #include <astray/api.hpp>
 
-using scalar_type     = double;
-using vector_type     = ast::vector3<scalar_type>;
-using pixel_type      = ast::vector3<std::uint8_t>;
-using image_type      = ast::image<pixel_type>;
-using image_size_type = image_type::size_type;
-using geodesic_type   = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>;
+using scalar_type   = double;
+using vector_type   = ast::vector3<scalar_type>;
+using image_type    = ast::image<ast::vector3<std::uint8_t>>;
+using geodesic_type = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>;
 
-struct teaser_settings
+struct settings_type
 {
-  image_size_type image_size;
-  std::size_t     iterations;
-  scalar_type     step_size ;
-  image_type      background;
-  vector_type     position  ;
-  scalar_type     fov       ;
+  image_type::size_type image_size;
+  std::size_t           iterations;
+  scalar_type           step_size ;
+  image_type            background;
+  vector_type           position  ;
+  scalar_type           fov       ;
 };
 
 template <typename metric_type>
-void make_teaser(const std::string& name, const teaser_settings& settings)
+void make_teaser(const std::string& name, const settings_type& settings)
 {
   using ray_tracer_type = ast::ray_tracer<metric_type, geodesic_type>;
 
@@ -38,7 +36,7 @@ void make_teaser(const std::string& name, const teaser_settings& settings)
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  const auto settings = teaser_settings
+  const settings_type settings
   {
     {3840, 2160},
     50000,
@@ -48,13 +46,12 @@ std::int32_t main(std::int32_t argc, char** argv)
     ast::to_radians(75.0)
   };
 
-  MPI_Init(nullptr, nullptr);
+  ast::mpi::environment environment;
   make_teaser<ast::metrics::minkowski      <scalar_type>>("minkowski"      , settings);
   make_teaser<ast::metrics::goedel         <scalar_type>>("goedel"         , settings);
   make_teaser<ast::metrics::schwarzschild  <scalar_type>>("schwarzschild"  , settings);
   make_teaser<ast::metrics::kerr           <scalar_type>>("kerr"           , settings);
   make_teaser<ast::metrics::kastor_traschen<scalar_type>>("kastor_traschen", settings);
-  MPI_Finalize();
   
   return 0;
 }
