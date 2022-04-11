@@ -17,9 +17,9 @@ struct proportional_integral_derivative_controller
 {
   // Reference: https://arxiv.org/pdf/2104.06836.pdf Section: 2.2 Error-Based Step Size Control, Equation: 2.6
   template <typename problem_type, typename extended_result_type>
-  error_evaluation<type> evaluate(const problem_type& problem, const type step_size, const extended_result_type& result)
+  __device__ constexpr error_evaluation<type> evaluate(const problem_type& problem, const type step_size, const extended_result_type& result)
   {
-    using operations = quantity_operations<std::remove_cv_t<std::remove_reference_t<typename problem_type::type>>>;
+    using operations = quantity_operations<std::remove_cv_t<std::remove_reference_t<typename problem_type::value_type>>>;
 
     type squared_sum(0);
     operations::for_each([&] (const auto& p, const auto& r, const auto& e)
@@ -27,7 +27,7 @@ struct proportional_integral_derivative_controller
       squared_sum += std::pow(std::abs(e) / (absolute_tolerance + relative_tolerance * std::max(std::abs(p), std::abs(r))), 2);
     }, problem.value, result.value, result.error);
 
-    error[0]           = type(1) / std::sqrt(std::real(squared_sum) / operations::size(problem.value));
+    error[0]           = type(1) / std::sqrt(squared_sum / operations::size(problem.value)); // std::real(squared_sum) unavailable in CUDA.
     type optimal = std::pow(error[0], beta[0] / ceschino_exponent) * 
                          std::pow(error[1], beta[1] / ceschino_exponent) * 
                          std::pow(error[2], beta[2] / ceschino_exponent);
@@ -35,7 +35,7 @@ struct proportional_integral_derivative_controller
 
     const bool accept  = limited >= accept_safety;
     if (accept)
-      std::rotate(error.rbegin(), error.rbegin() + 1, error.rend());
+      std::rotate(error.rbegin(), error.rbegin() + 1, error.rend()); // std::rotate unavailable in CUDA.
 
     return {accept, step_size * limited};
   }

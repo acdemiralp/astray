@@ -22,16 +22,16 @@ public:
   using pointer           = value_type const*;
   using reference         = value_type const&;
 
-  constexpr reference            operator* () const noexcept
+  __device__ constexpr reference            operator* () const noexcept
   {
     return problem;
   }
-  constexpr pointer              operator->() const noexcept
+  __device__ constexpr pointer              operator->() const noexcept
   {
     return &problem;
   }
 
-  constexpr fixed_step_iterator& operator++()
+  __device__ constexpr fixed_step_iterator& operator++()
   {
     if constexpr (is_extended_butcher_tableau_v<typename method_type::tableau_type>)
       problem.value = method_type::apply(problem, step_size).value;
@@ -42,14 +42,14 @@ public:
 
     return *this;
   }
-  constexpr fixed_step_iterator  operator++(std::int32_t)
+  __device__ constexpr fixed_step_iterator  operator++(std::int32_t)
   {
     fixed_step_iterator temp = *this;
     ++(*this);
     return temp;
   }
 
-  friend constexpr bool          operator==(const fixed_step_iterator& lhs, const fixed_step_iterator& rhs) noexcept
+  __device__ friend constexpr bool          operator==(const fixed_step_iterator& lhs, const fixed_step_iterator& rhs) noexcept
   {
     return lhs.problem == rhs.problem && lhs.step_size == rhs.step_size;
   }

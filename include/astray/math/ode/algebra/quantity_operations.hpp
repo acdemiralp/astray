@@ -10,7 +10,7 @@ template <typename value_type>
 struct quantity_operations 
 {
   template <typename function_type, typename... value_types>
-  static void        for_each(const function_type& function, const value_types&... values)
+  static constexpr void        for_each(const function_type& function, const value_types&... values)
   {
     if constexpr (is_scalar_v<value_type>)
       function(values...);
@@ -21,7 +21,7 @@ struct quantity_operations
         function(values.data()[i]...);
     }
   }
-  static std::size_t size    (const value_type& value)
+  static constexpr std::size_t size    (const value_type& value)
   {
     if constexpr (is_scalar_v<value_type>)
       return 1;

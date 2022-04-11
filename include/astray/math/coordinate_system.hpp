@@ -18,7 +18,7 @@ enum class coordinate_system
 };
 
 template <coordinate_system system, typename type>
-__device__ constexpr void wrap_angles(type& value)
+__device__ __host__ constexpr void wrap_angles(type& value)
 {
   if      constexpr (system == coordinate_system::boyer_lindquist)
   {
@@ -41,7 +41,7 @@ __device__ constexpr void wrap_angles(type& value)
 }
 
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
-__device__ constexpr void convert    (type& value)
+__device__ __host__ constexpr void convert    (type& value)
 {
   if        constexpr (source == coordinate_system::cartesian)
   {
@@ -131,7 +131,7 @@ __device__ constexpr void convert    (type& value)
   }
 }
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::value_type>
-__device__ constexpr void convert    (type& value, const scalar free_parameter)
+__device__ __host__ constexpr void convert    (type& value, const scalar free_parameter)
 {
   if        constexpr (source == coordinate_system::boyer_lindquist)
   {
@@ -256,7 +256,7 @@ __device__ constexpr void convert    (type& value, const scalar free_parameter)
 }
 
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
-__device__ constexpr void convert_ray(type& value)
+__device__ __host__ constexpr void convert_ray(type& value)
 {
   if        constexpr (source == coordinate_system::cartesian)
   {
@@ -367,7 +367,7 @@ __device__ constexpr void convert_ray(type& value)
   }
 }
 template<coordinate_system source, coordinate_system target, typename type, typename scalar = typename type::vector_type::value_type>
-__device__ constexpr void convert_ray(type& value, const scalar free_parameter)
+__device__ __host__ constexpr void convert_ray(type& value, const scalar free_parameter)
 {
   if        constexpr (source == coordinate_system::boyer_lindquist)
   {

@@ -17,7 +17,7 @@ class metric
 public:
   virtual ~metric() = default;
 
-  static constexpr coordinate_system           coordinate_system          ()
+  static constexpr coordinate_system                      coordinate_system          ()
   {
     return system;
   }

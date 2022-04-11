@@ -7,7 +7,7 @@ TEST_CASE("ast::partitioner")
   using pixel_type       = ast::vector3<std::uint8_t>;
   using partitioner_type = ast::partitioner<2, std::int32_t, ast::vector2<std::int32_t>, true>;
   
-  const ast::vector2<std::int32_t> domain_size = {1920, 1080};
+  const ast::vector2<std::int32_t> domain_size = {640, 480};
   const std::int32_t               ranks       = 32;
   
   ast::image domain(domain_size, pixel_type(0, 0, 0));
