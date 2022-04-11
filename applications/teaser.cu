@@ -40,9 +40,9 @@ std::int32_t main(std::int32_t argc, char** argv)
 {
   const auto settings = teaser_settings
   {
-    {320, 240},
-    3000,
-    0.01,
+    {3840, 2160},
+    50000,
+    0.005,
     image_type("../data/backgrounds/tycho_2_t5_wright_bridgman.jpg"),
     {1.0, 10.0, 0.01},
     ast::to_radians(75.0)
