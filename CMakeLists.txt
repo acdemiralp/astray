@@ -32,35 +32,41 @@ include(import_library)
 if               (ASTRAY_BUILD_TESTS)
   find_package   (doctest CONFIG REQUIRED)
   list           (APPEND PROJECT_LIBRARIES doctest::doctest)
+  set            (PROJECT_DEPENDENCY_DOCTEST "find_dependency(doctest)")
 endif            ()
 
 if               (ASTRAY_USE_FFMPEG)
   find_package   (FFMPEG REQUIRED)
   import_library (FFMPEG_INCLUDE_DIRS FFMPEG_LIBRARIES)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DASTRAY_USE_FFMPEG)
+  set            (PROJECT_DEPENDENCY_FFMPEG "find_dependency(FFMPEG)")
 endif            ()
 
 if               (ASTRAY_USE_MPI)
   find_package   (MPI REQUIRED COMPONENTS C)
   list           (APPEND PROJECT_LIBRARIES MPI::MPI_C)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DASTRAY_USE_MPI)
+  set            (PROJECT_DEPENDENCY_MPI "find_dependency(MPI)")
 endif            ()
 
-if                (${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
+if               (${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
   enable_language(CUDA) 
   find_package   (CUDA REQUIRED)
   list           (APPEND PROJECT_COMPILE_OPTIONS $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda --expt-relaxed-constexpr --use_fast_math>)
   import_library (CUDA_INCLUDE_DIRS CUDA_LIBRARIES)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA)
-elseif            (${ASTRAY_DEVICE_SYSTEM} STREQUAL OMP)
+  set            (PROJECT_DEPENDENCY_DEVICE "find_dependency(CUDA)")
+elseif           (${ASTRAY_DEVICE_SYSTEM} STREQUAL OMP)
   find_package   (OpenMP REQUIRED)
   list           (APPEND PROJECT_LIBRARIES OpenMP::OpenMP_CXX)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_OMP )
-elseif            (${ASTRAY_DEVICE_SYSTEM} STREQUAL TBB)
+  set            (PROJECT_DEPENDENCY_DEVICE "find_dependency(OpenMP)")
+elseif           (${ASTRAY_DEVICE_SYSTEM} STREQUAL TBB)
   find_package   (TBB REQUIRED)
   list           (APPEND PROJECT_LIBRARIES TBB::tbb TBB::tbbmalloc)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_TBB )
-elseif            (${ASTRAY_DEVICE_SYSTEM} STREQUAL CPP)
+  set            (PROJECT_DEPENDENCY_DEVICE "find_dependency(TBB)")
+elseif           (${ASTRAY_DEVICE_SYSTEM} STREQUAL CPP)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CPP )
 endif            ()
 
@@ -143,7 +149,20 @@ if(ASTRAY_BUILD_TESTS)
 endif()
 
 ##################################################  Installation  ##################################################
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-config)
 install(DIRECTORY include/ DESTINATION include)
-install(EXPORT  ${PROJECT_NAME}-config DESTINATION cmake)
-export (TARGETS ${PROJECT_NAME}        FILE        ${PROJECT_NAME}-config.cmake)
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME})
+install(EXPORT  ${PROJECT_NAME} FILE   ${PROJECT_NAME}-targets.cmake NAMESPACE ${PROJECT_NAME}:: DESTINATION cmake)
+export (TARGETS ${PROJECT_NAME} FILE   ${PROJECT_NAME}-targets.cmake)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file   (
+  ${PROJECT_NAME}-config.cmake.in  
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake INSTALL_DESTINATION cmake)
+write_basic_package_version_file(
+  ${PROJECT_NAME}-config-version.cmake 
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+  DESTINATION cmake)
