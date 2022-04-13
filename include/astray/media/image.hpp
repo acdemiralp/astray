@@ -19,7 +19,7 @@ public:
   using storage_type = std::vector<type>;
   using size_type    = vector2<std::int32_t>;
   
-  explicit image  (const size_type& size = {32, 32}, const type& value = type()) : data(size.prod(), value), size(size)
+  explicit image  (const size_type& size = {32, 32}, const type& value = type::Constant(255)) : data(size.prod(), value), size(size)
   {
     
   }
