@@ -103,7 +103,7 @@ public:
   {
     using constants = constants<scalar_type>;
     
-    image_type                         result           (partitioner.block_size());
+    image_type                         result           (partitioner.block_size(), pixel_type::Zero());
     thrust::device_vector<pixel_type>  device_background(background.data);
     thrust::device_vector<pixel_type>  device_result    (result    .data);
     thrust::device_vector<device_data> data             (std::vector<device_data>
