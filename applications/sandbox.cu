@@ -5,7 +5,7 @@
 
 template <
   typename scalar_type ,
-  typename metric_type = ast::metrics::de_sitter<scalar_type>, 
+  typename metric_type = ast::metrics::alcubierre<scalar_type>, 
   typename motion_type = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>>
 struct settings_type
 {
@@ -77,7 +77,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     if (ray_tracer->communicator.rank() == 0)
       video->append(image);
 
-    ray_tracer->observer.coordinate_time += 0.0000001f;
+    ray_tracer->observer.coordinate_time += 0.01f;
 
     //ray_tracer->observer.transform.translation[0] -= 0.01f;
     //ray_tracer->observer.transform.look_at({0.0, 0.0, 0.0});
