@@ -5,7 +5,7 @@
 
 template <
   typename scalar_type ,
-  typename metric_type = ast::metrics::alcubierre<scalar_type>, 
+  typename metric_type = ast::metrics::bessel<scalar_type>, 
   typename motion_type = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>>
 struct settings_type
 {
