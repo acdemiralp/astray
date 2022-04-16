@@ -18,21 +18,21 @@ public:
 
   __device__ termination_reason       check_termination  (const vector_type& position, const vector_type& direction) const override
   {
-    const auto rs = constants::_2G * mass / constants::c_sq;
+    const auto rs = constants::schwarzschild_radius(mass);
     if (position[1] < static_cast<scalar_type>(0) || 
-        static_cast<scalar_type>(std::pow(position[1], 2)) <= (static_cast<scalar_type>(1) + constants::eps) * static_cast<scalar_type>(std::pow(rs, 2)))
+        static_cast<scalar_type>(std::pow(position[1], 2)) <= (static_cast<scalar_type>(1) + constants::epsilon) * static_cast<scalar_type>(std::pow(rs, 2)))
       return termination_reason::spacetime_breakdown;
     return termination_reason::none;
   }
 
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
-    const auto rs    = constants::_2G * mass / constants::c_sq;
+    const auto rs    = constants::schwarzschild_radius(mass);
     const auto r     = position[1];
     const auto theta = position[2];
     const auto t1    = r - rs;
     const auto t2    = static_cast<scalar_type>(std::pow(r, 2));
-    const auto t6    = constants::c_sq;
+    const auto t6    = constants::speed_of_light_squared;
     const auto t10   = static_cast<scalar_type>(1) / r;
     const auto t14   = t10 / t1 * rs * static_cast<scalar_type>(0.5);
     const auto t15   = std::sin(theta);

@@ -17,7 +17,15 @@
 #include <astray/media/video.hpp>
 
 #include <astray/metrics/boyer_lindquist/kerr.hpp>
+#include <astray/metrics/cartesian/alcubierre.hpp>
+#include <astray/metrics/cartesian/bessel.hpp>
+#include <astray/metrics/cartesian/de_sitter.hpp>
 #include <astray/metrics/cartesian/goedel.hpp>
 #include <astray/metrics/cartesian/kastor_traschen.hpp>
 #include <astray/metrics/cartesian/minkowski.hpp>
+#include <astray/metrics/cylindrical/halilsoy.hpp>
+#include <astray/metrics/spherical/friedman_lemaitre_robertson_walker.hpp>
+#include <astray/metrics/spherical/hartle_thorne.hpp>
+#include <astray/metrics/spherical/morris_thorne.hpp>
+#include <astray/metrics/spherical/reissner_nordstroem.hpp>
 #include <astray/metrics/spherical/schwarzschild.hpp>

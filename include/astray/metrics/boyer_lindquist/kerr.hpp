@@ -23,7 +23,7 @@ public:
   __device__ termination_reason       check_termination          (const vector_type& position, const vector_type& direction) const override
   {
     const auto event_horizon = mass + std::sqrt(static_cast<scalar_type>(std::pow(mass, 2)) - static_cast<scalar_type>(std::pow(angular_momentum, 2)));
-    if (position[1] < static_cast<scalar_type>(0) || position[1] <= (static_cast<scalar_type>(1) + constants::eps) * event_horizon)
+    if (position[1] < static_cast<scalar_type>(0) || position[1] <= (static_cast<scalar_type>(1) + constants::epsilon) * event_horizon)
       return termination_reason::spacetime_breakdown;
     return termination_reason::none;
   }
