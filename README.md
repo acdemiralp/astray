@@ -23,6 +23,4 @@ A performance-portable relativistic ray tracing library.
 - Precompute the Christoffel symbols into a 4D image. Sample the image instead of computing the symbols to accelerate ray tracing.
 - Fermi Walker transport and charged particle motion.
 - More tests.
-
-### Potential Issues
 - Check if error controllers are transmitted to the device correctly.

@@ -7,16 +7,16 @@
 namespace ast
 {
 template <typename type>
-__constant__ type     tableau_a ;
+constexpr type        tableau_a ;
 template <typename type>
-__constant__ type     tableau_b ;
+constexpr type        tableau_b ;
 template <typename type>
-__constant__ type     tableau_bs;
+constexpr type        tableau_bs;
 template <typename type>
-__constant__ type     tableau_c ;
+constexpr type        tableau_c ;
 
 template <typename tableau_type>
-constexpr std::size_t stages_v                      = 0;
+constexpr std::size_t stages_v                      = tableau_b<tableau_type>.size();
 
 template <typename tableau_type>
 constexpr bool        is_extended_butcher_tableau_v = false;
