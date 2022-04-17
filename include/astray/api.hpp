@@ -23,6 +23,7 @@
 #include <astray/metrics/cartesian/goedel.hpp>
 #include <astray/metrics/cartesian/kastor_traschen.hpp>
 #include <astray/metrics/cartesian/minkowski.hpp>
+#include <astray/metrics/cylindrical/einstein_rosen_weber_wheeler_bonnor.hpp>
 #include <astray/metrics/spherical/barriola_vilenkin.hpp>
 #include <astray/metrics/spherical/bertotti_kasner.hpp>
 #include <astray/metrics/spherical/friedman_lemaitre_robertson_walker.hpp>
