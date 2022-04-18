@@ -110,6 +110,6 @@ public:
   scalar_type position1 = static_cast<scalar_type>( 1);
   scalar_type mass2     = static_cast<scalar_type>( 1);
   scalar_type position2 = static_cast<scalar_type>(-1);
-  scalar_type h         = static_cast<scalar_type>(constants::eps);
+  scalar_type h         = static_cast<scalar_type>(constants::epsilon);
 };
 }

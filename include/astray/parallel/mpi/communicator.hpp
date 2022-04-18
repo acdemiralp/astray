@@ -29,6 +29,14 @@ public:
   communicator& operator=(      communicator&& temp) = default;
   
   template <typename type>
+  void                   bcast  (type* data, std::int32_t size, const data_type& data_type, const std::int32_t root = 0)
+  {
+#ifdef ASTRAY_USE_MPI
+    MPI_Bcast(data, size, data_type.native(), root, native_);
+#endif
+  }
+  
+  template <typename type>
   void                   gatherv(
     type* sent    , std::int32_t  sent_size     ,                              const data_type& sent_data_type    ,
     type* received, std::int32_t* received_sizes, std::int32_t* displacements, const data_type& received_data_type, const std::int32_t root = 0)

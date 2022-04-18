@@ -27,15 +27,15 @@ struct proportional_integral_derivative_controller
       squared_sum += std::pow(std::abs(e) / (absolute_tolerance + relative_tolerance * std::max(std::abs(p), std::abs(r))), 2);
     }, problem.value, result.value, result.error);
 
-    error[0]           = type(1) / std::sqrt(squared_sum / operations::size(problem.value)); // std::real(squared_sum) unavailable in CUDA.
+    error[0]     = type(1) / std::sqrt(squared_sum / operations::size(problem.value)); // std::real(squared_sum) unavailable in CUDA until C++20 support.
     type optimal = std::pow(error[0], beta[0] / ceschino_exponent) * 
-                         std::pow(error[1], beta[1] / ceschino_exponent) * 
-                         std::pow(error[2], beta[2] / ceschino_exponent);
+                   std::pow(error[1], beta[1] / ceschino_exponent) * 
+                   std::pow(error[2], beta[2] / ceschino_exponent);
     type limited = limiter(optimal);
 
-    const bool accept  = limited >= accept_safety;
+    const bool accept = limited >= accept_safety;
     if (accept)
-      std::rotate(error.rbegin(), error.rbegin() + 1, error.rend()); // std::rotate unavailable in CUDA.
+      std::rotate(error.rbegin(), error.rbegin() + 1, error.rend()); // std::rotate(...) unavailable in CUDA until C++20 support.
 
     return {accept, step_size * limited};
   }
@@ -43,7 +43,7 @@ struct proportional_integral_derivative_controller
   const type                        absolute_tolerance = type(1e-6);
   const type                        relative_tolerance = type(1e-3);
   const type                        accept_safety      = type(0.81);
-  const device_function<type(type)> limiter            = [ ] (type value) { return type(1) + std::atan(value - type(1)); };
+  const device_function<type(type)> limiter            = [ ] __device__ (type value) { return type(1) + std::atan(value - type(1)); };
   const std::array<type, 3>         beta               = { type(1)   , type(0)   , type(0)    };
   std::array<type, 3>               error              = { type(1e-3), type(1e-3), type(1e-3) };
   

@@ -17,7 +17,20 @@
 #include <astray/media/video.hpp>
 
 #include <astray/metrics/boyer_lindquist/kerr.hpp>
+#include <astray/metrics/cartesian/alcubierre.hpp>
+#include <astray/metrics/cartesian/bessel.hpp>
+#include <astray/metrics/cartesian/de_sitter.hpp>
 #include <astray/metrics/cartesian/goedel.hpp>
 #include <astray/metrics/cartesian/kastor_traschen.hpp>
 #include <astray/metrics/cartesian/minkowski.hpp>
+#include <astray/metrics/cylindrical/einstein_rosen_weber_wheeler_bonnor.hpp>
+#include <astray/metrics/spherical/barriola_vilenkin.hpp>
+#include <astray/metrics/spherical/bertotti_kasner.hpp>
+#include <astray/metrics/spherical/friedman_lemaitre_robertson_walker.hpp>
+#include <astray/metrics/spherical/janis_newman_winicour.hpp>
+#include <astray/metrics/spherical/kottler.hpp>
+#include <astray/metrics/spherical/morris_thorne.hpp>
+#include <astray/metrics/spherical/reissner_nordstroem.hpp>
+#include <astray/metrics/spherical/reissner_nordstroem_extreme_dihole.hpp>
 #include <astray/metrics/spherical/schwarzschild.hpp>
+#include <astray/metrics/spherical/schwarzschild_cosmic_string.hpp>

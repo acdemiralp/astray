@@ -103,7 +103,7 @@ public:
   {
     using constants = constants<scalar_type>;
     
-    image_type                         result           (partitioner.block_size());
+    image_type                         result           (partitioner.block_size(), pixel_type::Zero());
     thrust::device_vector<pixel_type>  device_background(background.data);
     thrust::device_vector<pixel_type>  device_result    (result    .data);
     thrust::device_vector<device_data> data             (std::vector<device_data>
@@ -155,8 +155,8 @@ public:
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
           
           const image_size_type background_index(
-            std::floor(ray.position[3] / constants::_2pi * static_cast<scalar_type>(data->background_size[0] - 1)),
-            std::floor(ray.position[2] / constants::pi   * static_cast<scalar_type>(data->background_size[1] - 1)));
+            std::floor(ray.position[3] / constants::two_pi * static_cast<scalar_type>(data->background_size[0] - 1)),
+            std::floor(ray.position[2] / constants::pi     * static_cast<scalar_type>(data->background_size[1] - 1)));
           
           data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
         }

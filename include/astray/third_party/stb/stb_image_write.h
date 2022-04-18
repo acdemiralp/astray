@@ -166,6 +166,9 @@ LICENSE
 #endif
 #endif
 
+#define STBIWDEF inline // Hack to allow including from multiple headers.
+#define STB_IMAGE_WRITE_STATIC // Hack to allow including from multiple headers.
+
 #ifndef STB_IMAGE_WRITE_STATIC  // C++ forbids static forward declarations
 STBIWDEF int stbi_write_tga_with_rle;
 STBIWDEF int stbi_write_png_compression_level;
@@ -196,7 +199,8 @@ STBIWDEF void stbi_flip_vertically_on_write(int flip_boolean);
 
 #endif//INCLUDE_STB_IMAGE_WRITE_H
 
-#ifdef STB_IMAGE_WRITE_IMPLEMENTATION
+#ifndef STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #ifdef _WIN32
    #ifndef _CRT_SECURE_NO_WARNINGS

@@ -22,21 +22,21 @@ __device__ __host__ constexpr void wrap_angles(type& value)
 {
   if      constexpr (system == coordinate_system::boyer_lindquist)
   {
-    wrap_angle(value[2], constants<typename type::value_type>::pi  , true );
-    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
+    wrap_angle(value[2], constants<typename type::value_type>::pi    , true );
+    wrap_angle(value[3], constants<typename type::value_type>::two_pi, false);
   }
   else if constexpr (system == coordinate_system::cylindrical)
   {
-    wrap_angle(value[2], constants<typename type::value_type>::_2pi, false);
+    wrap_angle(value[2], constants<typename type::value_type>::two_pi, false);
   }
   else if constexpr (system == coordinate_system::prolate_spheroidal)
   {
-    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
+    wrap_angle(value[3], constants<typename type::value_type>::two_pi, false);
   }
   else if constexpr (system == coordinate_system::spherical)
   {
-    wrap_angle(value[2], constants<typename type::value_type>::pi  , true );
-    wrap_angle(value[3], constants<typename type::value_type>::_2pi, false);
+    wrap_angle(value[2], constants<typename type::value_type>::pi    , true );
+    wrap_angle(value[3], constants<typename type::value_type>::two_pi, false);
   }
 }
 

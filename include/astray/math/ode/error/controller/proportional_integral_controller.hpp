@@ -25,7 +25,7 @@ struct proportional_integral_controller
       squared_sum += std::pow(std::abs(e) / (absolute_tolerance + relative_tolerance * std::max(std::abs(p), std::abs(r))), 2);
     }, problem.value, result.value, result.error);
 
-    type error   = std::sqrt(squared_sum / operations::size(problem.value)); // std::real(squared_sum) unavailable in CUDA.
+    type error   = std::sqrt(squared_sum / operations::size(problem.value)); // std::real(squared_sum) unavailable in CUDA until C++20 support.
     type optimal = factor * std::pow(type(1) / std::abs(error), alpha) * std::pow(std::abs(previous_error), beta);
     type limited = std::min (factor_maximum, std::max(factor_minimum, optimal));
 
