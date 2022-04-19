@@ -53,7 +53,7 @@ constexpr auto make_ray_tracer(const settings_type<scalar_type, metric_type, mot
   ray_tracer->observer.transform.translation = settings.position;
   ray_tracer->observer.transform.rotation_from_euler(settings.rotation);
   if (settings.look_at_origin)
-    ray_tracer->observer.transform.look_at(typename ast::transform<scalar_type>::vector_type::Zero());
+    ray_tracer->observer.transform.look_at(ast::transform<scalar_type>::vector_type::Zero());
   ray_tracer->observer.coordinate_time       = settings.coordinate_time;
   ray_tracer->observer.projection            = settings.projection;
   ray_tracer->background                     = settings.background_image;

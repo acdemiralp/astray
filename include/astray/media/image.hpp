@@ -7,8 +7,11 @@
 
 #include <astray/math/indexing.hpp>
 #include <astray/math/linear_algebra.hpp>
+
+#pragma warning(push, 0)
 #include <astray/third_party/stb/stb_image.h>
 #include <astray/third_party/stb/stb_image_write.h>
+#pragma warning(pop)
 
 namespace ast
 {
