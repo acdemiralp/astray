@@ -11,5 +11,5 @@ vcpkg install --recurse --overlay-ports=../../vcpkg/overlay_ports doctest eigen3
 cd ..
 
 cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake ..
-cmake --build . --target ALL_BUILD --config Release
+cmake --build . --target ALL_BUILD --config Release --parallel 8
 cd ..
