@@ -7,7 +7,7 @@
 #include <astray/parallel/shared_device.hpp>
 
 #if (THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA)
-#include <math_functions.h>
+#include <cuda_runtime_api.h>
 #endif
 
 namespace ast::metrics

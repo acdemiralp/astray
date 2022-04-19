@@ -73,6 +73,7 @@ public:
   , lambda            (lambda)
   , bounds            (bounds)
   , error_evaluator   (error_evaluator)
+  , debug             (debug)
   // Parallelization.
   , partitioner       (communicator.rank(), communicator.size(), image_size)
 #ifdef ASTRAY_USE_MPI
@@ -80,7 +81,6 @@ public:
   , subarray_data_type(pixel_data_type   , partitioner.domain_size(), partitioner.block_size(), image_size_type::Zero().eval(), true)
   , resized_data_type (subarray_data_type, 0, partitioner.block_size()[0] * sizeof(pixel_type))
 #endif
-  , debug             (debug)
   {
     if constexpr (shared_device == shared_device_type::cuda)
     {
@@ -154,9 +154,10 @@ public:
           
           convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
           
-          const image_size_type background_index(
-            std::floor(ray.position[3] / constants::two_pi * static_cast<scalar_type>(data->background_size[0] - 1)),
-            std::floor(ray.position[2] / constants::pi     * static_cast<scalar_type>(data->background_size[1] - 1)));
+          image_size_type background_index(
+            std::floor(ray.position[3] / constants::two_pi * static_cast<scalar_type>(data->background_size[0])),
+            std::floor(ray.position[2] / constants::pi     * static_cast<scalar_type>(data->background_size[1])));
+          if (background_index[1] == data->background_size[1]) --background_index[1];
           
           data->result[index] = data->background[ravel_multi_index<image_size_type, true>(background_index, data->background_size)];
         }

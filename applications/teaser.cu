@@ -18,17 +18,17 @@ struct settings_type
   using vector_type          = typename transform_type::vector_type;
   using projection_type      = ast::projection<scalar_type>;
   
-  image_size_type      image_size       = {3840, 2160};
+  image_size_type      image_size       = {1920, 1080};
   metric_type          metric           = {};
-  std::size_t          iterations       = 50000;
-  scalar_type          lambda_step_size = static_cast<scalar_type>(0.001);
+  std::size_t          iterations       = 10000;
+  scalar_type          lambda_step_size = static_cast<scalar_type>(0.01);
   scalar_type          lambda           = static_cast<scalar_type>(0);
   bounds_type          bounds           = {};
   error_evaluator_type error_evaluator  = {};
   bool                 debug            = false;
 
-  vector_type          position         = vector_type(5.0, 0.0, 0.0);
-  vector_type          rotation         = vector_type(  0,   0,   0);
+  vector_type          position         = vector_type(5.0, 0.01, 5.0);
+  vector_type          rotation         = vector_type(  0,    0,   0);
   bool                 look_at_origin   = true;
   scalar_type          coordinate_time  = static_cast<scalar_type>(0);
   projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(120), static_cast<scalar_type>(image_size[0]) / image_size[1]};
