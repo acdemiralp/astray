@@ -7,11 +7,13 @@
 
 #include <astray/math/indexing.hpp>
 #include <astray/math/linear_algebra.hpp>
+#include <astray/utility/warning.hpp>
 
-#pragma warning(push, 0)
+DISABLE_WARNING_PUSH
+DISABLE_WARNING_DECLARED_DEPRECATED
 #include <astray/third_party/stb/stb_image.h>
 #include <astray/third_party/stb/stb_image_write.h>
-#pragma warning(pop)
+DISABLE_WARNING_POP
 
 namespace ast
 {

@@ -4,9 +4,7 @@
 #include <vector>
 
 #ifdef ASTRAY_USE_MPI
-#pragma warning(push, 0)
 #include <mpi.h>
-#pragma warning(pop)
 #endif
 
 namespace ast::mpi
