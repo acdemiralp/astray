@@ -27,8 +27,8 @@ struct settings_type
   error_evaluator_type error_evaluator  = {};
   bool                 debug            = true;
 
-  vector_type          position         = vector_type(5.1, 0.1, 5.1);
-  vector_type          rotation         = vector_type(  0,   0,   0);
+  vector_type          position         = vector_type(5.1f, 0.1f, 5.1f);
+  vector_type          rotation         = vector_type(0.0f, 0.0f, 0.0f);
   bool                 look_at_origin   = true;
   scalar_type          coordinate_time  = static_cast<scalar_type>(0);
   projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(75), static_cast<scalar_type>(image_size[0]) / image_size[1]};

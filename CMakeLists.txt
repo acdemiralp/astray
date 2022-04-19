@@ -1,5 +1,5 @@
 ##################################################    Project     ##################################################
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.23 FATAL_ERROR)
 project               (astray VERSION 1.0 LANGUAGES C CXX)
 list                  (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set_property          (GLOBAL PROPERTY USE_FOLDERS ON)
@@ -50,8 +50,9 @@ if               (ASTRAY_USE_MPI)
 endif            ()
 
 if               (${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
-  enable_language(CUDA) 
+  enable_language(CUDA)
   find_package   (CUDA REQUIRED)
+  set            (CMAKE_CUDA_ARCHITECTURES "all-major")
   list           (APPEND PROJECT_COMPILE_OPTIONS $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda --expt-relaxed-constexpr --use_fast_math>)
   import_library (CUDA_INCLUDE_DIRS CUDA_LIBRARIES)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA)

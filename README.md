@@ -2,10 +2,10 @@
 A performance-portable relativistic ray tracing library.
 
 ### Requirements
-- CMake
-- Git
-- Optional: CUDA
-- Optional: MPI
+- CMake 3.23+
+- Git 2.36+
+- Optional: CUDA 11.6+
+- Optional: MPI 2.0+
 
 ### Getting Started
 - Clone the repository.

@@ -86,7 +86,7 @@ public:
     {
       cudaDeviceReset();
 
-      std::size_t target_heap_size = 2e+8;
+      const auto  target_heap_size = static_cast<std::size_t>(2e+8);
       std::size_t heap_size        = 0;
       cudaDeviceGetLimit(&heap_size, cudaLimitMallocHeapSize);
       if (heap_size < target_heap_size)
