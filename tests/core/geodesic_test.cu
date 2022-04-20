@@ -21,7 +21,6 @@ void test()
     geodesic_type::integrate(value, metric, 10, 0.1);
   });
   thrust::copy(device_ray.begin(), device_ray.end(), ray.begin());
-
 }
 
 TEST_CASE("ast::geodesic")

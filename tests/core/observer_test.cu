@@ -14,13 +14,14 @@ TEST_CASE("ast::observer")
   image_size_type size {640, 480};
 
   {
-    observer_type observer {ast::perspective_projection<scalar_type>{ast::to_radians(75.0), static_cast<scalar_type>(size[0]) / size[1]}};
+    observer_type observer;
+    observer.set_projection(ast::perspective_projection<scalar_type>{ast::to_radians(75.0), static_cast<scalar_type>(size[0]) / size[1]});
 
-    auto rays      = observer.generate_rays(size, size, image_size_type::Zero().eval());
-    auto rays_host = std::vector<ray_type>(size.prod());
+    auto& rays      = observer.generate_rays(size, size, image_size_type::Zero().eval());
+    auto  rays_host = std::vector<ray_type>(size.prod());
     thrust::copy(rays.begin(), rays.end(), rays_host.begin());
 
-    auto image     = image_type({size});
+    auto image      = image_type({size});
 
     for (auto x = 0; x < size[0]; ++x)
       for (auto y = 0; y < size[1]; ++y)
@@ -40,13 +41,14 @@ TEST_CASE("ast::observer")
   }
 
   {
-    observer_type observer {ast::orthographic_projection<scalar_type>{static_cast<scalar_type>(1), static_cast<scalar_type>(size[0]) / size[1]}};
+    observer_type observer;
+    observer.set_projection(ast::orthographic_projection<scalar_type>{static_cast<scalar_type>(1), static_cast<scalar_type>(size[0]) / size[1]});
 
-    auto rays      = observer.generate_rays(size, size, image_size_type::Zero().eval());
-    auto rays_host = std::vector<ray_type>(size.prod());
+    auto& rays      = observer.generate_rays(size, size, image_size_type::Zero().eval());
+    auto  rays_host = std::vector<ray_type>(size.prod());
     thrust::copy(rays.begin(), rays.end(), rays_host.begin());
 
-    auto image     = image_type({size});
+    auto image      = image_type({size});
 
     for (auto x = 0; x < size[0]; ++x)
       for (auto y = 0; y < size[1]; ++y)

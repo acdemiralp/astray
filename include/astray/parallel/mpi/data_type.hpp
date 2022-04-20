@@ -12,12 +12,12 @@ namespace ast::mpi
 class data_type
 {
 public:
-  data_type           (std::int32_t native = 0, bool managed = false) 
+  explicit data_type  (const std::int32_t native = 0, const bool managed = false) 
   : native_(native), managed_(managed)
   {
   
   }
-  data_type           (const data_type&  that, std::int32_t size) 
+  data_type           (const data_type&  that, const std::int32_t size) 
   : managed_(true)
   {
 #ifdef ASTRAY_USE_MPI
@@ -42,8 +42,21 @@ public:
     MPI_Type_commit         (&native_);
 #endif
   }
-  data_type           (const data_type&  that) = delete;
-  data_type           (      data_type&& temp) = delete;
+  data_type           (const data_type&  that)
+  : managed_(true)
+  {
+#ifdef ASTRAY_USE_MPI
+    MPI_Type_dup(that.native_, &native_);
+#endif
+  }
+  data_type           (      data_type&& temp) noexcept
+  : native_(temp.native_), managed_(temp.managed_)
+  {
+#ifdef ASTRAY_USE_MPI
+    temp.managed_ = false;
+    temp.native_  = MPI_DATATYPE_NULL;
+#endif
+  }
   virtual ~data_type  ()
   {
 #ifdef ASTRAY_USE_MPI
@@ -51,8 +64,37 @@ public:
       MPI_Type_free(&native_);
 #endif
   }
-  data_type& operator=(const data_type&  that) = delete;
-  data_type& operator=(      data_type&& temp) = delete;
+  data_type& operator=(const data_type&  that)
+  {
+    if (this != &that)
+    {
+#ifdef ASTRAY_USE_MPI
+      if (managed_ && native_ != MPI_DATATYPE_NULL)
+        MPI_Type_free(&native_);
+
+      managed_ = true;
+      MPI_Type_dup(that.native_, &native_);
+#endif
+    }
+    return *this;
+  }
+  data_type& operator=(      data_type&& temp) noexcept
+  {
+    if (this != &temp)
+    {
+#ifdef ASTRAY_USE_MPI
+      if (managed_ && native_ != MPI_DATATYPE_NULL)
+        MPI_Type_free(&native_);
+      
+      managed_      = temp.managed_;
+      native_       = temp.native_ ;
+
+      temp.managed_ = false;
+      temp.native_  = MPI_DATATYPE_NULL;
+#endif
+    }
+    return *this;
+  }
   
   constexpr std::int32_t native() const
   {

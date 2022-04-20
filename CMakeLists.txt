@@ -101,7 +101,8 @@ set_target_properties     (${PROJECT_NAME}_ PROPERTIES LINKER_LANGUAGE CXX)
 
 ##################################################  Applications  ##################################################
 if(ASTRAY_BUILD_APPLICATIONS)
-  file(GLOB PROJECT_APPLICATION_CPPS applications/*.cu)
+  file(GLOB PROJECT_APPLICATION_HPPS applications/*.hpp)
+  file(GLOB PROJECT_APPLICATION_CPPS applications/*.cu )
 
   # Hack for compiling .cu files as .cpp.
   if   (NOT ${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
@@ -110,12 +111,12 @@ if(ASTRAY_BUILD_APPLICATIONS)
 
   foreach(_SOURCE ${PROJECT_APPLICATION_CPPS})
     get_filename_component(_NAME ${_SOURCE} NAME_WE)
-    add_executable        (${_NAME} ${_SOURCE})
+    add_executable        (${_NAME} ${PROJECT_APPLICATION_HPPS} ${_SOURCE})
     target_link_libraries (${_NAME} ${PROJECT_NAME})
     target_link_libraries (${_NAME} ${PROJECT_LIBRARIES})
     set_property          (TARGET ${_NAME} PROPERTY FOLDER applications)
     set_property          (TARGET ${_NAME} PROPERTY LINKER_LANGUAGE CXX)
-    assign_source_group   (${_SOURCE})
+    assign_source_group   (${PROJECT_APPLICATION_HPPS} ${_SOURCE})
   endforeach()
 endif()
 

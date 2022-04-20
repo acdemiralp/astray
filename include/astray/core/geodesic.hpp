@@ -7,7 +7,6 @@
 
 namespace ast
 {
-// Still has room for improvement.
 template <typename scalar_type_, typename tableau_type_, typename error_evaluator_type_ = proportional_integral_controller<scalar_type_, tableau_type_>>
 class geodesic
 {
