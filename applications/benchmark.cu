@@ -9,7 +9,7 @@
 #include "common.hpp"
 
 template <typename scalar_type, typename metric_type, typename motion_type>
-constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, motion_type>& settings, std::size_t repeats, const std::string& file_postfix)
+constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, motion_type>& settings, std::size_t repeats, const std::string& metric_name)
 {
   std::unique_ptr<ast::ray_tracer<metric_type, motion_type>> ray_tracer;
   ast::image<ast::vector3<std::uint8_t>>                     image     ;
@@ -30,7 +30,7 @@ constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, mot
     });
   }, repeats);
 
-  const std::string filepath("../data/outputs/performance/benchmark_" + file_postfix + "_" + std::to_string(std::time(nullptr)));
+  const std::string filepath("../data/outputs/performance/benchmark_" + metric_name + "_" + std::to_string(std::time(nullptr)));
   session.to_csv(filepath + ".csv");
   if (ray_tracer->communicator().rank() == 0)
     image.save(filepath + ".png");
