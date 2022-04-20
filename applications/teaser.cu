@@ -18,21 +18,21 @@ struct settings_type
   using vector_type          = typename transform_type::vector_type;
   using projection_type      = ast::projection<scalar_type>;
   
-  image_size_type      image_size       = {1920, 1080};
+  image_size_type      image_size       = {3840, 2160};
   metric_type          metric           = {};
-  std::size_t          iterations       = 10000;
-  scalar_type          lambda_step_size = static_cast<scalar_type>(0.01);
+  std::size_t          iterations       = 40000;
+  scalar_type          lambda_step_size = static_cast<scalar_type>(0.001);
   scalar_type          lambda           = static_cast<scalar_type>(0);
   bounds_type          bounds           = {};
   error_evaluator_type error_evaluator  = {};
   bool                 debug            = false;
 
-  vector_type          position         = vector_type(5.0, 0.01, 5.0);
-  vector_type          rotation         = vector_type(  0,    0,   0);
+  vector_type          position         = vector_type(8.0, 0.0, 0.0);
+  vector_type          rotation         = vector_type(  0,   0,   0);
   bool                 look_at_origin   = true;
   scalar_type          coordinate_time  = static_cast<scalar_type>(0);
-  projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(120), static_cast<scalar_type>(image_size[0]) / image_size[1]};
-  image_type           background_image = image_type("../data/backgrounds/tycho_2_t5_wright_bridgman.jpg");
+  projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(100), static_cast<scalar_type>(image_size[0]) / image_size[1]};
+  image_type           background_image = image_type("../data/backgrounds/checkerboard_gray.png");
 };
 
 template <typename scalar_type, typename metric_type, typename motion_type>
@@ -70,12 +70,6 @@ std::int32_t main(std::int32_t argc, char** argv)
       image.save("../data/outputs/applications/teaser_minkowski.png");
   }
   {
-    const auto ray_tracer = make_ray_tracer(settings_type<scalar_type, ast::metrics::goedel<scalar_type>>());
-    const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator.rank() == 0)
-      image.save("../data/outputs/applications/teaser_goedel.png");
-  }
-  {
     const auto ray_tracer = make_ray_tracer(settings_type<scalar_type, ast::metrics::schwarzschild<scalar_type>>());
     const auto image      = ray_tracer->render_frame();
     if (ray_tracer->communicator.rank() == 0)
@@ -88,7 +82,25 @@ std::int32_t main(std::int32_t argc, char** argv)
       image.save("../data/outputs/applications/teaser_kerr.png");
   }
   {
-    const auto ray_tracer = make_ray_tracer(settings_type<scalar_type, ast::metrics::kastor_traschen<scalar_type>>());
+    const auto ray_tracer = make_ray_tracer(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>());
+    const auto image      = ray_tracer->render_frame();
+    if (ray_tracer->communicator.rank() == 0)
+      image.save("../data/outputs/applications/teaser_reissner_nordstroem.png");
+  }
+  {
+    settings_type<scalar_type, ast::metrics::morris_thorne<scalar_type>> settings;
+    settings.position[0] = 1.0;
+
+    const auto ray_tracer = make_ray_tracer(settings);
+    const auto image      = ray_tracer->render_frame();
+    if (ray_tracer->communicator.rank() == 0)
+      image.save("../data/outputs/applications/teaser_morris_thorne.png");
+  }
+  {
+    settings_type<scalar_type, ast::metrics::kastor_traschen<scalar_type>> settings;
+    settings.position[0] = 5.0;
+
+    const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
     if (ray_tracer->communicator.rank() == 0)
       image.save("../data/outputs/applications/teaser_kastor_traschen.png");
