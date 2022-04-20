@@ -5,7 +5,7 @@
 
 template <
   typename scalar_type = float,
-  typename metric_type = ast::metrics::einstein_rosen_weber_wheeler_bonnor<scalar_type>, 
+  typename metric_type = ast::metrics::schwarzschild<scalar_type>, 
   typename motion_type = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>>
 struct settings_type
 {
@@ -18,21 +18,21 @@ struct settings_type
   using vector_type          = typename transform_type::vector_type;
   using projection_type      = ast::projection<scalar_type>;
   
-  image_size_type      image_size       = {192, 108};
+  image_size_type      image_size       = {640, 480};
   metric_type          metric           = {};
-  std::size_t          iterations       = 100;
-  scalar_type          lambda_step_size = static_cast<scalar_type>(0.1);
+  std::size_t          iterations       = 1000;
+  scalar_type          lambda_step_size = static_cast<scalar_type>(0.01);
   scalar_type          lambda           = static_cast<scalar_type>(0);
   bounds_type          bounds           = {};
   error_evaluator_type error_evaluator  = {};
   bool                 debug            = true;
 
-  vector_type          position         = vector_type(5.1f, 0.1f, 5.1f);
-  vector_type          rotation         = vector_type(0.0f, 0.0f, 0.0f);
+  vector_type          position         = vector_type(5, 0, 0);
+  vector_type          rotation         = vector_type(0, 0, 0);
   bool                 look_at_origin   = true;
   scalar_type          coordinate_time  = static_cast<scalar_type>(0);
-  projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(75), static_cast<scalar_type>(image_size[0]) / image_size[1]};
-  image_type           background_image = image_type("../data/backgrounds/checkerboard.png");
+  projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(120), static_cast<scalar_type>(image_size[0]) / image_size[1]};
+  image_type           background_image = image_type("../data/backgrounds/checkerboard_gray.png");
 };
 
 template <typename scalar_type, typename metric_type, typename motion_type>
@@ -54,7 +54,7 @@ constexpr auto make_ray_tracer(const settings_type<scalar_type, metric_type, mot
   ray_tracer->observer.coordinate_time       = settings.coordinate_time;
   ray_tracer->observer.projection            = settings.projection;
   ray_tracer->background                     = settings.background_image;
-  return std::move(ray_tracer);
+  return ray_tracer;
 }
 
 std::int32_t main(std::int32_t argc, char** argv)
@@ -62,6 +62,6 @@ std::int32_t main(std::int32_t argc, char** argv)
   const auto ray_tracer = make_ray_tracer(settings_type<>());
   const auto image      = ray_tracer->render_frame();
   if (ray_tracer->communicator.rank() == 0)
-    image.save("../data/outputs/applications/sandbox.jpg");
+    image.save("../data/outputs/applications/sandbox.png");
   return 0;
 }

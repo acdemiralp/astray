@@ -5,7 +5,7 @@
 #include <astray/api.hpp>
 
 template <
-  typename scalar_type ,
+  typename scalar_type = float,
   typename metric_type = ast::metrics::kerr<scalar_type>, 
   typename motion_type = ast::geodesic<scalar_type, ast::runge_kutta_4_tableau<scalar_type>>>
 struct settings_type
@@ -28,12 +28,12 @@ struct settings_type
   error_evaluator_type error_evaluator  = {};
   bool                 debug            = false;
 
-  vector_type          position         = vector_type(-5.0, 0.0, -5.0);
-  vector_type          rotation         = vector_type(   0,   0,    0);
+  vector_type          position         = vector_type(5, 0, -5);
+  vector_type          rotation         = vector_type(0, 0,  0);
   bool                 look_at_origin   = true;
   scalar_type          coordinate_time  = static_cast<scalar_type>(0);
   projection_type      projection       = ast::perspective_projection<scalar_type> {ast::to_radians<scalar_type>(120), static_cast<scalar_type>(image_size[0]) / image_size[1]};
-  image_type           background_image = image_type("../data/backgrounds/checkerboard.png");
+  image_type           background_image = image_type("../data/backgrounds/checkerboard_gray.png");
 };
 
 template <typename scalar_type, typename metric_type, typename motion_type>
@@ -55,14 +55,12 @@ constexpr auto make_ray_tracer(const settings_type<scalar_type, metric_type, mot
   ray_tracer->observer.coordinate_time       = settings.coordinate_time;
   ray_tracer->observer.projection            = settings.projection;
   ray_tracer->background                     = settings.background_image;
-  return std::move(ray_tracer);
+  return ray_tracer;
 }
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  using scalar_type = float;
-
-  const auto ray_tracer = make_ray_tracer(settings_type<scalar_type, ast::metrics::schwarzschild<scalar_type>>());
+  const auto ray_tracer = make_ray_tracer(settings_type<>());
 
   std::optional<ast::video> video(std::nullopt);
   if (ray_tracer->communicator.rank() == 0)
@@ -77,8 +75,8 @@ std::int32_t main(std::int32_t argc, char** argv)
     if (ray_tracer->communicator.rank() == 0)
       video->append(image);
 
-    ray_tracer->observer.transform.translation[0] += 0.01f;
-    ray_tracer->observer.transform.look_at({0.0, 0.0, 0.0});
+    ray_tracer->observer.transform.translation[2] += 0.01f;
+    ray_tracer->observer.transform.look_at({0, 0, 0});
   }
 
   return 0;
