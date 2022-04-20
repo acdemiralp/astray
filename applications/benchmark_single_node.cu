@@ -1,3 +1,5 @@
+#undef ASTRAY_USE_MPI
+
 #include <cstdint>
 
 #include <astray/api.hpp>
@@ -21,47 +23,46 @@ constexpr auto run_benchmark  (
   auto session = ast::benchmark<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
   {
     ray_tracer->set_image_size({240, 135});
-    recorder.record(metric_name + ",240,135", [&]
+    recorder.record(metric_name + ",240,135"  , [&]
     {
       image = &ray_tracer->render_frame();
     });
     ray_tracer->set_image_size({320, 180});
-    recorder.record(metric_name + ",320,180", [&]
+    recorder.record(metric_name + ",320,180"  , [&]
     {
       image = &ray_tracer->render_frame();
     });
     ray_tracer->set_image_size({480, 270});
-    recorder.record(metric_name + ",480,270", [&]
+    recorder.record(metric_name + ",480,270"  , [&]
     {
       image = &ray_tracer->render_frame();
     });
-    //ray_tracer->set_image_size({960, 540});
-    //recorder.record(metric_name + ",960,540", [&]
-    //{
-    //  image = &ray_tracer->render_frame();
-    //});
-    //ray_tracer->set_image_size({1920, 1080});
-    //recorder.record(metric_name + ",1920,1080", [&]
-    //{
-    //  image = &ray_tracer->render_frame();
-    //});
-    //ray_tracer->set_image_size({3840, 2160});
-    //recorder.record(metric_name + ",3840,2160", [&]
-    //{
-    //  image = &ray_tracer->render_frame();
-    //});
+    ray_tracer->set_image_size({960, 540});
+    recorder.record(metric_name + ",960,540"  , [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+    ray_tracer->set_image_size({1920, 1080});
+    recorder.record(metric_name + ",1920,1080", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+    ray_tracer->set_image_size({3840, 2160});
+    recorder.record(metric_name + ",3840,2160", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
   }, repeats);
 
-  if (ray_tracer->communicator().rank() == 0)
-    image->save("../data/outputs/performance/benchmarks_single_" + device_name + "_" + metric_name + ".png");
+  image->save("../data/outputs/performance/benchmarks_single_" + device_name + "_" + metric_name + ".png");
 
   return session;
 }
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  ast::mpi::environment environment;
-  
+  constexpr auto runs = 10;
+
   std::string device_name;
   if      constexpr (ast::shared_device == ast::shared_device_type::cpp )
     device_name = "cpp" ;
@@ -72,8 +73,6 @@ std::int32_t main(std::int32_t argc, char** argv)
   else if constexpr (ast::shared_device == ast::shared_device_type::tbb )
     device_name = "tbb" ;
   
-  constexpr auto runs = 10;
-
   std::ofstream stream("../data/outputs/performance/benchmark_single_" + device_name + ".csv");
   stream << "metric,width,height,";
   for (auto i = 0; i < runs; ++i)
