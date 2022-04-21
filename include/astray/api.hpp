@@ -34,3 +34,6 @@
 #include <astray/metrics/spherical/reissner_nordstroem_extreme_dihole.hpp>
 #include <astray/metrics/spherical/schwarzschild.hpp>
 #include <astray/metrics/spherical/schwarzschild_cosmic_string.hpp>
+
+#include <astray/parallel/distributed_device.hpp>
+#include <astray/parallel/shared_device.hpp>

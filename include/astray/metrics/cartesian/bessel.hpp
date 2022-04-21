@@ -4,7 +4,7 @@
 
 #include <astray/core/metric.hpp>
 #include <astray/math/constants.hpp>
-#include <astray/parallel/shared_device.hpp>
+#include <astray/parallel/thrust.hpp>
 
 #if (THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA)
 #include <cuda_runtime_api.h>
@@ -161,17 +161,19 @@ public:
 
   __device__ static scalar_type       cyl_bessel_j0      (const scalar_type x)
   {
-    if constexpr (shared_device == shared_device_type::cuda)
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
       return static_cast<scalar_type>(j0(x));
-    else
+#else
       return std::cyl_bessel_j(0, x);
+#endif
   }
   __device__ static scalar_type       cyl_bessel_j1      (const scalar_type x)
   {
-    if constexpr (shared_device == shared_device_type::cuda)
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
       return static_cast<scalar_type>(j1(x));
-    else
+#else
       return std::cyl_bessel_j(1, x);
+#endif
   }
 
   scalar_type C = static_cast<scalar_type>(1);

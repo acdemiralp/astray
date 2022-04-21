@@ -83,7 +83,7 @@ public:
       coordinate_time_
     };
     thrust::copy_n(&device_data, 1, perspective_data_.begin());
-    
+
     thrust::for_each(
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(0)           , rays_.begin())),
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(rays_.size()), rays_.end  ())),

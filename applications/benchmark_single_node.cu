@@ -1,4 +1,6 @@
+#ifdef ASTRAY_USE_MPI
 #undef ASTRAY_USE_MPI
+#endif
 
 #include <cstdint>
 

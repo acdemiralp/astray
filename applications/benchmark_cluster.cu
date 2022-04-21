@@ -1,12 +1,10 @@
-#include <cstddef>
 #include <cstdint>
-#include <ctime>
-#include <memory>
-#include <string>
 
 #include <astray/api.hpp>
 
 #include "common.hpp"
+
+using scalar_type = float;
 
 template <typename scalar_type, typename metric_type, typename motion_type>
 constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, motion_type>& settings, std::size_t repeats, const std::string& metric_name)
@@ -41,7 +39,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 {
   ast::mpi::environment environment;
 
-  using scalar_type = double;
 
   std::cout << "Argument count " << argc;
   for (auto i = 0; i < argc; ++i)

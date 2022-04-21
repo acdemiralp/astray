@@ -40,8 +40,9 @@ struct settings_type
 template <typename scalar_type, typename metric_type, typename motion_type>
 constexpr auto make_ray_tracer(const settings_type<scalar_type, metric_type, motion_type>& settings)
 {
-  if constexpr (ast::shared_device == ast::shared_device_type::cuda)
-    cudaDeviceReset();
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
+  cudaDeviceReset();
+#endif
   
   auto ray_tracer = std::make_unique<ast::ray_tracer<metric_type, motion_type>>(
     settings.image_size      ,

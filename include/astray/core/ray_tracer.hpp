@@ -11,9 +11,7 @@
 #include <astray/math/coordinate_system.hpp>
 #include <astray/media/image.hpp>
 #include <astray/parallel/mpi/mpi.hpp>
-#include <astray/parallel/distributed_device.hpp>
 #include <astray/parallel/partitioner.hpp>
-#include <astray/parallel/shared_device.hpp>
 #include <astray/parallel/thrust.hpp>
 
 namespace ast
@@ -74,14 +72,13 @@ public:
   , device_background_ (background_.data)
   , partitioner_       (communicator_.rank(), communicator_.size(), image_size)
   {
-    if constexpr (shared_device == shared_device_type::cuda)
-    {
-      constexpr auto target_heap_size = static_cast<std::size_t>(1e+9);
-      std::size_t    heap_size        = 0;
-      cudaDeviceGetLimit(&heap_size, cudaLimitMallocHeapSize);
-      if (heap_size < target_heap_size)
-        cudaDeviceSetLimit(cudaLimitMallocHeapSize, target_heap_size);
-    }
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
+    constexpr auto target_heap_size = static_cast<std::size_t>(1e+9);
+    std::size_t    heap_size        = 0;
+    cudaDeviceGetLimit(&heap_size, cudaLimitMallocHeapSize);
+    if (heap_size < target_heap_size)
+      cudaDeviceSetLimit(cudaLimitMallocHeapSize, target_heap_size);
+#endif
 
     set_image_size(image_size);
   }
@@ -115,11 +112,10 @@ public:
       result_.size                   ,
       partitioner_.rank_offset()
     };
-
     thrust::copy_n(&data, 1, device_data_.begin());
     
     auto& rays = observer_.generate_rays(partitioner_.domain_size(), partitioner_.block_size(), partitioner_.rank_offset());
-    
+
     thrust::for_each(
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(0)          , rays.begin())),
       thrust::make_zip_iterator(thrust::make_tuple(thrust::counting_iterator<std::size_t>(rays.size()), rays.end  ())),
@@ -169,24 +165,23 @@ public:
 
     thrust::copy(device_result_.begin(), device_result_.end(), result_.data.begin());
 
-    if constexpr (distributed_device == distributed_device_type::mpi)
-    {
-      std::vector<std::int32_t> counts         (communicator_.size(), 1);
-      std::vector<std::int32_t> displacements  (communicator_.size());
-      for (auto y = 0; y < partitioner_.grid_size()[1]; ++y)
-        for (auto x = 0; x < partitioner_.grid_size()[0]; ++x)
-          displacements[x + y * partitioner_.grid_size()[0]] = x + y * (partitioner_.block_size()[1] * partitioner_.grid_size()[0]);
+#ifdef ASTRAY_USE_MPI
+    std::vector<std::int32_t> counts         (communicator_.size(), 1);
+    std::vector<std::int32_t> displacements  (communicator_.size());
+    for (auto y = 0; y < partitioner_.grid_size()[1]; ++y)
+      for (auto x = 0; x < partitioner_.grid_size()[0]; ++x)
+        displacements[x + y * partitioner_.grid_size()[0]] = x + y * (partitioner_.block_size()[1] * partitioner_.grid_size()[0]);
 
-      communicator_.gatherv(
-        result_         .data.data(), static_cast<std::int32_t>(result_.data.size()), pixel_data_type_  ,
-        gathered_result_.data.data(), counts.data(), displacements.data()           , resized_data_type_);
+    communicator_.gatherv(
+      result_         .data.data(), static_cast<std::int32_t>(result_.data.size()), pixel_data_type_  ,
+      gathered_result_.data.data(), counts.data(), displacements.data()           , resized_data_type_);
 
-      if (communicator_.rank() != 0)
-        return result_; // Workers return their partial results.
-      return gathered_result_;
-    }
-    else
-      return result_;
+    if (communicator_.rank() != 0)
+      return result_; // Workers return their partial results.
+    return gathered_result_;
+#else
+    return result_;
+#endif
   }
 
   const image_size_type&      image_size          () const
@@ -197,17 +192,16 @@ public:
   {
     partitioner_.set_domain_size(value);
     
-    result_        = image_type(partitioner_.block_size(), pixel_type());
-    device_result_ = result_.data;
+    result_             = image_type(partitioner_.block_size(), pixel_type());
+    device_result_      = result_.data;
 
-    if constexpr (distributed_device == distributed_device_type::mpi)
-    {
-      gathered_result_    = image_type(partitioner_.domain_size());
+#ifdef ASTRAY_USE_MPI
+    gathered_result_    = image_type(partitioner_.domain_size());
 
-      pixel_data_type_    = mpi::data_type(mpi::data_type(MPI_UNSIGNED_CHAR), 3);
-      subarray_data_type_ = mpi::data_type(pixel_data_type_   , value, partitioner_.block_size(), image_size_type::Zero().eval(), true);
-      resized_data_type_  = mpi::data_type(subarray_data_type_, 0    , partitioner_.block_size()[0] * sizeof(pixel_type));
-    }
+    pixel_data_type_    = mpi::data_type(mpi::data_type(MPI_UNSIGNED_CHAR), 3);
+    subarray_data_type_ = mpi::data_type(pixel_data_type_   , value, partitioner_.block_size(), image_size_type::Zero().eval(), true);
+    resized_data_type_  = mpi::data_type(subarray_data_type_, 0    , partitioner_.block_size()[0] * sizeof(pixel_type));
+#endif
   }
 
         observer_type&        observer            ()
