@@ -20,21 +20,22 @@ constexpr auto run_benchmark  (
   const image_type* image;
   
 #ifdef ASTRAY_USE_MPI
-  auto session = ast::benchmark_mpi<float, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
+  auto session = ast::benchmark_mpi<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #else
-  auto session = ast::benchmark    <float, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
+  auto session = ast::benchmark    <scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #endif
   {
-    recorder.record("Render"        , [&] ()
+    // TODO BEGIN
+    ray_tracer->set_image_size({240, 135});
+    recorder.record(metric_name + ",240,135"  , [&]
     {
-      image = ray_tracer->render_frame();
+      image = &ray_tracer->render_frame();
     });
+    // TODO END
   }, repeats);
 
-  const std::string filepath("../data/outputs/performance/benchmark_" + metric_name + "_" + std::to_string(std::time(nullptr)));
-  session.to_csv(filepath + ".csv");
   if (ray_tracer->communicator().rank() == 0)
-    image.save(filepath + ".png");
+    image->save("./benchmark_cluster_" + device_name + "_" + metric_name + ".png"); // Just put it in the execution directory.
 
   return session;
 }
