@@ -25,13 +25,47 @@ constexpr auto run_benchmark  (
   auto session = ast::benchmark    <scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #endif
   {
-    // TODO BEGIN
-    ray_tracer->set_image_size({240, 135});
-    recorder.record(metric_name + ",240,135"  , [&]
+    ray_tracer->set_image_size({512, 512});
+    recorder.record(metric_name + ",512,512"  , [&]
     {
       image = &ray_tracer->render_frame();
     });
-    // TODO END
+
+    ray_tracer->set_image_size({724, 724});
+    recorder.record(metric_name + ",724,724"  , [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+
+    ray_tracer->set_image_size({1024, 1024});
+    recorder.record(metric_name + ",1024,1024", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+
+    ray_tracer->set_image_size({1448, 1448});
+    recorder.record(metric_name + ",1448,1448", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+
+    ray_tracer->set_image_size({2048, 2048});
+    recorder.record(metric_name + ",2048,2048", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+
+    ray_tracer->set_image_size({2896, 2896});
+    recorder.record(metric_name + ",2896,2896", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
+
+    ray_tracer->set_image_size({4096, 4096});
+    recorder.record(metric_name + ",4096,4096", [&]
+    {
+      image = &ray_tracer->render_frame();
+    });
   }, repeats);
 
   if (ray_tracer->communicator().rank() == 0)
