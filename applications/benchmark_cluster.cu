@@ -7,10 +7,17 @@
 using scalar_type = float;
 
 template <typename scalar_type, typename metric_type, typename motion_type>
-constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, motion_type>& settings, std::size_t repeats, const std::string& metric_name)
+constexpr auto run_benchmark  (
+  const settings_type<scalar_type, metric_type, motion_type>& settings   , 
+  std::size_t                                                 repeats    , 
+  const std::string&                                          device_name,
+  const std::string&                                          metric_name)
 {
-  std::unique_ptr<ast::ray_tracer<metric_type, motion_type>> ray_tracer;
-  ast::image<ast::vector3<std::uint8_t>>                     image     ;
+  using ray_tracer_type = ast::ray_tracer<metric_type, motion_type>;
+  using image_type      = typename ray_tracer_type::image_type;
+
+  auto              ray_tracer = make_ray_tracer(settings);
+  const image_type* image;
   
 #ifdef ASTRAY_USE_MPI
   auto session = ast::benchmark_mpi<float, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
@@ -18,10 +25,6 @@ constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, mot
   auto session = ast::benchmark    <float, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #endif
   {
-    recorder.record("Initialization", [&] ()
-    {
-      ray_tracer = make_ray_tracer(settings);
-    });
     recorder.record("Render"        , [&] ()
     {
       image = ray_tracer->render_frame();
@@ -32,27 +35,48 @@ constexpr void run_benchmark  (const settings_type<scalar_type, metric_type, mot
   session.to_csv(filepath + ".csv");
   if (ray_tracer->communicator().rank() == 0)
     image.save(filepath + ".png");
+
+  return session;
 }
 
-// Usage mpiexec -n [NUMBER_OF_NODES] ./benchmark [METRIC_NAME] [IMAGE_SIZE_X] [IMAGE_SIZE_Y]
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  ast::mpi::environment environment;
-
-
-  std::cout << "Argument count " << argc;
-  for (auto i = 0; i < argc; ++i)
-    std::cout << "Argument " << i << ": " << argv[i] << "\n";
+  ast::mpi::environment  environment ;
+  ast::mpi::communicator communicator;
   
-  int x;
-  std::cin >> x;
+  constexpr auto runs = 10;
+  
+  std::string device_name;
+  if      constexpr (ast::shared_device == ast::shared_device_type::cpp )
+    device_name = "cpp" ;
+  else if constexpr (ast::shared_device == ast::shared_device_type::cuda)
+    device_name = "cuda";
+  else if constexpr (ast::shared_device == ast::shared_device_type::omp )
+    device_name = "omp" ;
+  else if constexpr (ast::shared_device == ast::shared_device_type::tbb )
+    device_name = "tbb" ;
+  
+  auto benchmark1 = run_benchmark(settings_type<scalar_type, ast::metrics::minkowski          <scalar_type>>(), runs, device_name, "minkowski"          );
+  auto benchmark2 = run_benchmark(settings_type<scalar_type, ast::metrics::schwarzschild      <scalar_type>>(), runs, device_name, "schwarzschild"      );
+  auto benchmark3 = run_benchmark(settings_type<scalar_type, ast::metrics::kerr               <scalar_type>>(), runs, device_name, "kerr"               );
+  auto benchmark4 = run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem");
+  auto benchmark5 = run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      );
+  auto benchmark6 = run_benchmark(settings_type<scalar_type, ast::metrics::kastor_traschen    <scalar_type>>(), runs, device_name, "kastor_traschen"    );
 
-  //run_benchmark(settings_type<scalar_type, ast::metrics::minkowski          <scalar_type>>(), 10, "minkowski"          );
-  //run_benchmark(settings_type<scalar_type, ast::metrics::schwarzschild      <scalar_type>>(), 10, "schwarzschild"      );
-  //run_benchmark(settings_type<scalar_type, ast::metrics::kerr               <scalar_type>>(), 10, "kerr"               );
-  //run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), 10, "reissner_nordstroem");
-  //run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), 10, "morris_thorne"      );
-  //run_benchmark(settings_type<scalar_type, ast::metrics::kastor_traschen    <scalar_type>>(), 10, "kastor_traschen"    );
+  if (communicator.rank() == 0)
+  {
+    std::ofstream stream("../data/outputs/performance/benchmark_cluster_" + device_name + "_" + std::to_string(communicator.size()) + ".csv");
+    stream << "rank,metric,width,height,";
+    for (auto i = 0; i < runs; ++i)
+      stream << "run_" << i << ",";
+    stream << "mean,variance,standard deviation\n";
+    stream << benchmark1.to_string();
+    stream << benchmark2.to_string();
+    stream << benchmark3.to_string();
+    stream << benchmark4.to_string();
+    stream << benchmark5.to_string();
+    stream << benchmark6.to_string();
+  }
 
   return 0;
 }

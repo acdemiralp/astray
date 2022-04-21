@@ -22,6 +22,7 @@ constexpr auto run_benchmark  (
 
   auto              ray_tracer = make_ray_tracer(settings);
   const image_type* image;
+
   auto session = ast::benchmark<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
   {
     ray_tracer->set_image_size({240, 135});
@@ -86,7 +87,6 @@ std::int32_t main(std::int32_t argc, char** argv)
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem").to_string();
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      ).to_string();
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::kastor_traschen    <scalar_type>>(), runs, device_name, "kastor_traschen"    ).to_string();
-  stream.close();
 
   return 0;
 }
