@@ -8,17 +8,19 @@ using scalar_type = float;
 
 template <typename scalar_type, typename metric_type, typename motion_type>
 constexpr auto run_benchmark  (
-  const settings_type<scalar_type, metric_type, motion_type>& settings   , 
-  std::size_t                                                 repeats    , 
-  const std::string&                                          device_name,
-  const std::string&                                          metric_name)
+  settings_type<scalar_type, metric_type, motion_type> settings   , 
+  std::size_t                                          repeats    , 
+  const std::string&                                   device_name,
+  const std::string&                                   metric_name)
 {
   using ray_tracer_type = ast::ray_tracer<metric_type, motion_type>;
   using image_type      = typename ray_tracer_type::image_type;
 
+  std::get<ast::perspective_projection<scalar_type>>(settings.projection).aspect_ratio = static_cast<scalar_type>(1);
+
   auto              ray_tracer = make_ray_tracer(settings);
   const image_type* image;
-  
+
 #ifdef ASTRAY_USE_MPI
   auto session = ast::benchmark_mpi<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #else
