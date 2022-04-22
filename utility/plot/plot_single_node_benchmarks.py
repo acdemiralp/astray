@@ -1,25 +1,18 @@
 import matplotlib.pyplot as plt
 import pandas            as pd
 
-def create_plot(benchmark, device, metric, plot):
-    data         = benchmark[benchmark['metric'] == metric]
-    data         = data.sort_values(by=['width'])
-    plot.set_title (metric)
-    plot.plot      (data['width'].apply(str) + 'x' + data['height'].apply(str), data['mean'], label=device)
-    plot.set_xlabel("Image Size (Pixels)")
-    plot.set_ylabel("Time (Milliseconds)")
-    plot.legend    ()
+file_prefix = '../../data/outputs/performance/benchmark_single_'
+devices     = ['cpp', 'omp', 'tbb', 'cuda']
+metrics     = ["minkowski", "schwarzschild", "kerr", "kastor_traschen"]
 
-benchmarks = {
-    'cpp' : '../../data/outputs/performance/benchmark_single_cpp.csv' , 
-    'omp' : '../../data/outputs/performance/benchmark_single_omp.csv' , 
-    'tbb' : '../../data/outputs/performance/benchmark_single_tbb.csv' ,
-    'cuda': '../../data/outputs/performance/benchmark_single_cuda.csv'}
 figure, plots = plt.subplots(1,4)
-for key in benchmarks:
-    benchmark = pd.read_csv(benchmarks[key])
-    create_plot(benchmark, key, 'minkowski'      , plots[0]) 
-    create_plot(benchmark, key, 'schwarzschild'  , plots[1])
-    create_plot(benchmark, key, 'kerr'           , plots[2])
-    create_plot(benchmark, key, 'kastor_traschen', plots[3])
+for device in devices:
+    data = pd.read_csv(file_prefix + device + ".csv")
+    for index, metric in enumerate(metrics):
+        selection = data[data['metric'] == metric].sort_values(by=['width'])
+        plots[index].set_title (metric)
+        plots[index].set_xlabel("Image Size (Pixels)")
+        plots[index].set_ylabel("Time (Milliseconds)")
+        plots[index].plot      (selection['width'].apply(str) + 'x' + selection['height'].apply(str), selection['mean'], label=device)
+        plots[index].legend    ()
 plt.show()
