@@ -7,15 +7,15 @@ TEST_CASE("ast::coordinate_system")
   using scalar_type = double;
   using vector_type = ast::vector4<scalar_type>;
 
-  auto       device                 = std::random_device                         ();
-  auto       mersenne               = std::mt19937                               (device());
-  const auto cartesian_distribution = std::uniform_real_distribution<scalar_type>(1  , 10);
-  const auto radius_distribution    = std::uniform_real_distribution<scalar_type>(0.1, 10);
-  const auto pi_distribution        = std::uniform_real_distribution<scalar_type>(0.1, M_PI     - 0.1);
-  const auto two_pi_distribution    = std::uniform_real_distribution<scalar_type>(0.1, M_PI * 2 - 0.1);
-  const auto sigma_distribution     = std::uniform_real_distribution<scalar_type>( 1 , 10);
-  const auto tau_distribution       = std::uniform_real_distribution<scalar_type>(-1 , 1 );
-  const auto alpha_distribution     = std::uniform_real_distribution<scalar_type>(0.1, 10);
+  auto device                 = std::random_device                         ();
+  auto mersenne               = std::mt19937                               (device());
+  auto cartesian_distribution = std::uniform_real_distribution<scalar_type>(1  , 10);
+  auto radius_distribution    = std::uniform_real_distribution<scalar_type>(0.1, 10);
+  auto pi_distribution        = std::uniform_real_distribution<scalar_type>(0.1, M_PI     - 0.1);
+  auto two_pi_distribution    = std::uniform_real_distribution<scalar_type>(0.1, M_PI * 2 - 0.1);
+  auto sigma_distribution     = std::uniform_real_distribution<scalar_type>( 1 , 10);
+  auto tau_distribution       = std::uniform_real_distribution<scalar_type>(-1 , 1 );
+  auto alpha_distribution     = std::uniform_real_distribution<scalar_type>(0.1, 10);
 
   for (auto i = 0; i < 10000; ++i)
   {
