@@ -9,8 +9,9 @@ using scalar_type = float;
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  settings_type<scalar_type, ast::metrics::kerr<scalar_type>> settings;
-  settings.position = {5, 0, -5};
+  settings_type<scalar_type, ast::metrics::schwarzschild<scalar_type>> settings;
+  settings.image_size = {960, 540};
+  settings.position   = {5, 0, -5};
   settings.background_image.load("../data/backgrounds/checkerboard_gray.png");
 
   const auto ray_tracer = make_ray_tracer(settings);
@@ -22,7 +23,8 @@ std::int32_t main(std::int32_t argc, char** argv)
   constexpr auto frames(1000);
   for (auto i = 0; i < frames; ++i)
   {
-    std::cout << i << "/" << frames - 1 << "\n";
+    if (i % 10 == 0)
+      std::cout << i << "/" << frames - 1 << "\n";
 
     auto image = ray_tracer->render_frame();
     if (ray_tracer->communicator().rank() == 0)
