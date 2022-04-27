@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <iostream>
 
 #include <astray/api.hpp>
 
