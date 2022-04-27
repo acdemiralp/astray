@@ -1,0 +1,5 @@
+rank,metric,width,height,run_0,mean,variance,standard deviation
+0,minkowski,512,512,86948.9062,86948.9062,0,0
+0,schwarzschild,512,512,79740.9844,79740.9844,0,0
+0,kerr,512,512,136389.75,136389.75,0,0
+0,kastor_traschen,512,512,139915.406,139915.406,0,0

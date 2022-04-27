@@ -34,7 +34,7 @@ constexpr auto run_benchmark  (
     image_size = image_size_type(512, 512);
     ray_tracer->set_image_size(image_size);
     if (ray_tracer->get_communicator().rank() == 0)
-      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+      std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
@@ -43,7 +43,7 @@ constexpr auto run_benchmark  (
     image_size = image_size_type(724, 724);
     ray_tracer->set_image_size(image_size);
     if (ray_tracer->get_communicator().rank() == 0)
-      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+      std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
@@ -52,7 +52,7 @@ constexpr auto run_benchmark  (
     image_size = image_size_type(1024, 1024);
     ray_tracer->set_image_size(image_size);
     if (ray_tracer->get_communicator().rank() == 0)
-      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+      std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
@@ -61,7 +61,7 @@ constexpr auto run_benchmark  (
     image_size = image_size_type(1448, 1448);
     ray_tracer->set_image_size(image_size);
     if (ray_tracer->get_communicator().rank() == 0)
-      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+      std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
@@ -70,7 +70,7 @@ constexpr auto run_benchmark  (
     image_size = image_size_type(2048, 2048);
     ray_tracer->set_image_size(image_size);
     if (ray_tracer->get_communicator().rank() == 0)
-      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+      std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
@@ -79,7 +79,7 @@ constexpr auto run_benchmark  (
     //image_size = image_size_type(2896, 2896);
     //ray_tracer->set_image_size(image_size);
     //if (ray_tracer->get_communicator().rank() == 0)
-    //  std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    //  std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     //recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     //{
     //  image = &ray_tracer->render_frame();
@@ -87,11 +87,13 @@ constexpr auto run_benchmark  (
     //
     //image_size = image_size_type(4096, 4096);
     //if (ray_tracer->get_communicator().rank() == 0)
-    //  std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    //  std::cout << "Recording. Processes: " << ray_tracer->get_communicator().size() << ". Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
     //recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     //{
     //  image = &ray_tracer->render_frame();
     //});
+
+    ++iteration;
   }, repeats);
 
   if (ray_tracer->get_communicator().rank() == 0)

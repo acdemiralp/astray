@@ -80,6 +80,10 @@ public:
       cudaDeviceSetLimit(cudaLimitMallocHeapSize, target_heap_size);
 #endif
 
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_OMP
+    omp_set_num_threads(omp_get_num_procs());
+#endif
+
     set_image_size(image_size);
   }
   ray_tracer           (const ray_tracer&  that) = delete ;
