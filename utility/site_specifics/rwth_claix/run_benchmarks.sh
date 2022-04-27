@@ -14,9 +14,9 @@ ssh -t ad784563@login18-g-1 "
 
   cd $ROOT_DIR
   ./bootstrap.sh
-  
   cd build
-  cmake .. -DASTRAY_USE_MPI=ON -DASTRAY_BUILD_APPLICATIONS=ON -DASTRAY_DEVICE_SYSTEM=CUDA
+
+  cmake .. -DASTRAY_USE_MPI=ON -DASTRAY_BUILD_APPLICATIONS=ON -DASTRAY_BUILD_TESTS=OFF -DASTRAY_DEVICE_SYSTEM=CUDA
   cd ..
   ./bootstrap.sh
   cd build
