@@ -36,7 +36,7 @@ devices                   = ['cpp', 'omp', 'tbb', 'cuda']
 metrics                   = ["minkowski", "schwarzschild", "kerr", "kastor_traschen"]
 process_counts            = [1, 2, 4, 8, 16, 32, 64]
 strong_scaling_image_size = [1024, 1024]
-weak_scaling_image_sizes  = [[512, 512], [724, 724] ,[1024, 1024], [1448, 1448], [2048, 2048], [2896, 2896], [4096, 4096]]
+weak_scaling_image_sizes  = [[512, 512], [724, 724] ,[1024, 1024], [1448, 1448], [2048, 2048]] # , [2896, 2896], [4096, 4096]]
 
 figure, plots  = plt.subplots(2,4)
 create_plots(file_prefix, devices, process_counts, metrics, strong_scaling_image_size, plots[0])

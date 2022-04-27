@@ -50,11 +50,11 @@ constexpr auto run_benchmark  (
     {
       image = &ray_tracer->render_frame();
     });
-    ray_tracer->set_image_size({3840, 2160});
-    recorder.record(metric_name + ",3840,2160", [&]
-    {
-      image = &ray_tracer->render_frame();
-    });
+    //ray_tracer->set_image_size({3840, 2160});
+    //recorder.record(metric_name + ",3840,2160", [&]
+    //{
+    //  image = &ray_tracer->render_frame();
+    //});
   }, repeats);
 
   image->save("../data/outputs/performance/benchmarks_single_" + device_name + "_" + metric_name + ".png");
@@ -84,8 +84,8 @@ std::int32_t main(std::int32_t argc, char** argv)
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::minkowski          <scalar_type>>(), runs, device_name, "minkowski"          ).to_string();
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::schwarzschild      <scalar_type>>(), runs, device_name, "schwarzschild"      ).to_string();
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::kerr               <scalar_type>>(), runs, device_name, "kerr"               ).to_string();
-  stream << run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem").to_string();
-  stream << run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      ).to_string();
+  //stream << run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem").to_string();
+  //stream << run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      ).to_string();
   stream << run_benchmark(settings_type<scalar_type, ast::metrics::kastor_traschen    <scalar_type>>(), runs, device_name, "kastor_traschen"    ).to_string();
 
   return 0;

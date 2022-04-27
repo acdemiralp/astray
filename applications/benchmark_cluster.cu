@@ -57,17 +57,17 @@ constexpr auto run_benchmark  (
       image = &ray_tracer->render_frame();
     });
 
-    ray_tracer->set_image_size({2896, 2896});
-    recorder.record(metric_name + ",2896,2896", [&]
-    {
-      image = &ray_tracer->render_frame();
-    });
+    //ray_tracer->set_image_size({2896, 2896});
+    //recorder.record(metric_name + ",2896,2896", [&]
+    //{
+    //  image = &ray_tracer->render_frame();
+    //});
 
-    ray_tracer->set_image_size({4096, 4096});
-    recorder.record(metric_name + ",4096,4096", [&]
-    {
-      image = &ray_tracer->render_frame();
-    });
+    //ray_tracer->set_image_size({4096, 4096});
+    //recorder.record(metric_name + ",4096,4096", [&]
+    //{
+    //  image = &ray_tracer->render_frame();
+    //});
   }, repeats);
 
   if (ray_tracer->get_communicator().rank() == 0)
@@ -96,8 +96,8 @@ std::int32_t main(std::int32_t argc, char** argv)
   auto benchmark1 = run_benchmark(settings_type<scalar_type, ast::metrics::minkowski          <scalar_type>>(), runs, device_name, "minkowski"          );
   auto benchmark2 = run_benchmark(settings_type<scalar_type, ast::metrics::schwarzschild      <scalar_type>>(), runs, device_name, "schwarzschild"      );
   auto benchmark3 = run_benchmark(settings_type<scalar_type, ast::metrics::kerr               <scalar_type>>(), runs, device_name, "kerr"               );
-  auto benchmark4 = run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem");
-  auto benchmark5 = run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      );
+  //auto benchmark4 = run_benchmark(settings_type<scalar_type, ast::metrics::reissner_nordstroem<scalar_type>>(), runs, device_name, "reissner_nordstroem");
+  //auto benchmark5 = run_benchmark(settings_type<scalar_type, ast::metrics::morris_thorne      <scalar_type>>(), runs, device_name, "morris_thorne"      );
   auto benchmark6 = run_benchmark(settings_type<scalar_type, ast::metrics::kastor_traschen    <scalar_type>>(), runs, device_name, "kastor_traschen"    );
 
   if (communicator.rank() == 0)
@@ -110,8 +110,8 @@ std::int32_t main(std::int32_t argc, char** argv)
     stream << benchmark1.to_string();
     stream << benchmark2.to_string();
     stream << benchmark3.to_string();
-    stream << benchmark4.to_string();
-    stream << benchmark5.to_string();
+    //stream << benchmark4.to_string();
+    //stream << benchmark5.to_string();
     stream << benchmark6.to_string();
   }
 
