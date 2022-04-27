@@ -19,44 +19,41 @@ ssh -t ad784563@login18-g-1 "
   cmake .. -DASTRAY_USE_MPI=ON -DASTRAY_BUILD_APPLICATIONS=ON -DASTRAY_DEVICE_SYSTEM=CUDA
   cd ..
   ./bootstrap.sh
-  
   cd build
+
   mpiexec -n 1 -m 1 ./benchmark_cluster
   mpiexec -n 2 -m 2 ./benchmark_cluster
   mpiexec -n 4 -m 4 ./benchmark_cluster
   mpiexec -n 8 -m 8 ./benchmark_cluster
   mpiexec -n 16 -m 16 ./benchmark_cluster
   
-  cd build
   cmake .. -DASTRAY_DEVICE_SYSTEM=OMP
   cd ..
-  ./bootstrap.sh
-  
+  ./bootstrap.sh  
   cd build
+
   mpiexec -n 1 -m 1 ./benchmark_cluster
   mpiexec -n 2 -m 2 ./benchmark_cluster
   mpiexec -n 4 -m 4 ./benchmark_cluster
   mpiexec -n 8 -m 8 ./benchmark_cluster
   mpiexec -n 16 -m 16 ./benchmark_cluster
   
-  cd build
   cmake .. -DASTRAY_DEVICE_SYSTEM=TBB
   cd ..
-  ./bootstrap.sh
-  
+  ./bootstrap.sh  
   cd build
+
   mpiexec -n 1 -m 1 ./benchmark_cluster
   mpiexec -n 2 -m 2 ./benchmark_cluster
   mpiexec -n 4 -m 4 ./benchmark_cluster
   mpiexec -n 8 -m 8 ./benchmark_cluster
   mpiexec -n 16 -m 16 ./benchmark_cluster
   
-  cd build
   cmake .. -DASTRAY_DEVICE_SYSTEM=CPP
   cd ..
-  ./bootstrap.sh
-  
+  ./bootstrap.sh  
   cd build
+
   mpiexec -n 1 -m 1 ./benchmark_cluster
   mpiexec -n 2 -m 2 ./benchmark_cluster
   mpiexec -n 4 -m 4 ./benchmark_cluster
