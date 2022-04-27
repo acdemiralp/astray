@@ -11,5 +11,5 @@ VCPKG_DEFAULT_TRIPLET=x64-linux
 cd ..
 
 cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake ..
-cmake --build . --target all --config Release --parallel 8
+cmake --build . --clean-first --target all --config Release --parallel 8
 cd ..

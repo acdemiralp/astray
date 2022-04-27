@@ -87,7 +87,7 @@ constexpr auto run_benchmark  (
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  constexpr auto runs = 1;
+  constexpr auto runs = 5;
 
   std::string device_name;
   if      constexpr (ast::shared_device == ast::shared_device_type::cpp )
