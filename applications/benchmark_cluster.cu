@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <iostream>
 
 #include <astray/api.hpp>
 
@@ -15,56 +16,79 @@ constexpr auto run_benchmark  (
 {
   using ray_tracer_type = ast::ray_tracer<metric_type, motion_type>;
   using image_type      = typename ray_tracer_type::image_type;
+  using image_size_type = typename ray_tracer_type::image_size_type;
 
   std::get<ast::perspective_projection<scalar_type>>(settings.projection).aspect_ratio = static_cast<scalar_type>(1);
 
   auto              ray_tracer = make_ray_tracer(settings);
   const image_type* image;
-
+  
+  auto iteration  = 0;
+  auto image_size = image_size_type();
 #ifdef ASTRAY_USE_MPI
-  auto session = ast::benchmark_mpi<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
+  auto session    = ast::benchmark_mpi<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #else
-  auto session = ast::benchmark    <scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
+  auto session    = ast::benchmark    <scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
 #endif
   {
-    ray_tracer->set_image_size({512, 512});
-    recorder.record(metric_name + ",512,512"  , [&]
+    image_size = image_size_type(512, 512);
+    ray_tracer->set_image_size(image_size);
+    if (ray_tracer->get_communicator().rank() == 0)
+      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
 
-    ray_tracer->set_image_size({724, 724});
-    recorder.record(metric_name + ",724,724"  , [&]
+    image_size = image_size_type(724, 724);
+    ray_tracer->set_image_size(image_size);
+    if (ray_tracer->get_communicator().rank() == 0)
+      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
 
-    ray_tracer->set_image_size({1024, 1024});
-    recorder.record(metric_name + ",1024,1024", [&]
+    image_size = image_size_type(1024, 1024);
+    ray_tracer->set_image_size(image_size);
+    if (ray_tracer->get_communicator().rank() == 0)
+      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
 
-    ray_tracer->set_image_size({1448, 1448});
-    recorder.record(metric_name + ",1448,1448", [&]
+    image_size = image_size_type(1448, 1448);
+    ray_tracer->set_image_size(image_size);
+    if (ray_tracer->get_communicator().rank() == 0)
+      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
 
-    ray_tracer->set_image_size({2048, 2048});
-    recorder.record(metric_name + ",2048,2048", [&]
+    image_size = image_size_type(2048, 2048);
+    ray_tracer->set_image_size(image_size);
+    if (ray_tracer->get_communicator().rank() == 0)
+      std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
 
-    //ray_tracer->set_image_size({2896, 2896});
-    //recorder.record(metric_name + ",2896,2896", [&]
+    //image_size = image_size_type(2896, 2896);
+    //ray_tracer->set_image_size(image_size);
+    //if (ray_tracer->get_communicator().rank() == 0)
+    //  std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    //recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     //{
     //  image = &ray_tracer->render_frame();
     //});
-
-    //ray_tracer->set_image_size({4096, 4096});
-    //recorder.record(metric_name + ",4096,4096", [&]
+    //
+    //image_size = image_size_type(4096, 4096);
+    //if (ray_tracer->get_communicator().rank() == 0)
+    //  std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    //recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     //{
     //  image = &ray_tracer->render_frame();
     //});

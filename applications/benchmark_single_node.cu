@@ -3,6 +3,7 @@
 #endif
 
 #include <cstdint>
+#include <iostream>
 
 #include <astray/api.hpp>
 
@@ -19,42 +20,64 @@ constexpr auto run_benchmark  (
 {
   using ray_tracer_type = ast::ray_tracer<metric_type, motion_type>;
   using image_type      = typename ray_tracer_type::image_type;
+  using image_size_type = typename ray_tracer_type::image_size_type;
 
   auto              ray_tracer = make_ray_tracer(settings);
   const image_type* image;
 
-  auto session = ast::benchmark<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
+  auto iteration  = 0;
+  auto image_size = image_size_type();
+  auto session    = ast::benchmark<scalar_type, std::milli, std::chrono::high_resolution_clock>([&] (auto& recorder)
   {
-    ray_tracer->set_image_size({240, 135});
-    recorder.record(metric_name + ",240,135"  , [&]
+    image_size = image_size_type(240, 135);
+    ray_tracer->set_image_size(image_size);
+    std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
-    ray_tracer->set_image_size({320, 180});
-    recorder.record(metric_name + ",320,180"  , [&]
+    
+    image_size = image_size_type(320, 180);
+    ray_tracer->set_image_size(image_size);
+    std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
-    ray_tracer->set_image_size({480, 270});
-    recorder.record(metric_name + ",480,270"  , [&]
+
+    image_size = image_size_type(480, 270);
+    ray_tracer->set_image_size(image_size);
+    std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
-    ray_tracer->set_image_size({960, 540});
-    recorder.record(metric_name + ",960,540"  , [&]
+
+    image_size = image_size_type(960, 540);
+    ray_tracer->set_image_size(image_size);
+    std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
-    ray_tracer->set_image_size({1920, 1080});
-    recorder.record(metric_name + ",1920,1080", [&]
+
+    image_size = image_size_type(1920, 1080);
+    ray_tracer->set_image_size(image_size);
+    std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     {
       image = &ray_tracer->render_frame();
     });
-    //ray_tracer->set_image_size({3840, 2160});
-    //recorder.record(metric_name + ",3840,2160", [&]
+
+    //image_size = image_size_type(3840, 2160);
+    //ray_tracer->set_image_size(image_size);
+    //std::cout << "Recording. Iteration: " << iteration << ". Device: " << device_name << ". Metric: " << metric_name << ". Image Size: " << image_size[0] << "x" << image_size[1] << ".\n";
+    //recorder.record(metric_name + "," + std::to_string(image_size[0]) + "," + std::to_string(image_size[0]), [&]
     //{
     //  image = &ray_tracer->render_frame();
     //});
+
+    ++iteration;
   }, repeats);
 
   image->save("../data/outputs/performance/benchmarks_single_" + device_name + "_" + metric_name + ".png");
@@ -64,7 +87,7 @@ constexpr auto run_benchmark  (
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-  constexpr auto runs = 5;
+  constexpr auto runs = 1;
 
   std::string device_name;
   if      constexpr (ast::shared_device == ast::shared_device_type::cpp )
