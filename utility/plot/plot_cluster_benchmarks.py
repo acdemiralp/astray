@@ -34,7 +34,7 @@ def create_plots(file_prefix, devices, process_counts, metrics, image_size, plot
 file_prefix               = '../../data/outputs/performance/benchmark_cluster_'
 devices                   = ['cpp', 'omp', 'tbb', 'cuda']
 metrics                   = ["minkowski", "schwarzschild", "kerr", "kastor_traschen"]
-process_counts            = [1, 2, 4, 8, 16, 32, 64]
+process_counts            = [1, 2, 4, 8, 16] # , 32, 64]
 strong_scaling_image_size = [1024, 1024]
 weak_scaling_image_sizes  = [[512, 512], [724, 724] ,[1024, 1024], [1448, 1448], [2048, 2048]] # , [2896, 2896], [4096, 4096]]
 

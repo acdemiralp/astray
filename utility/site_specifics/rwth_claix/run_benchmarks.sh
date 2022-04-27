@@ -59,4 +59,7 @@ ssh -t ad784563@login18-g-1 "
   mpiexec -n 4 -m 1 ./benchmark_cluster
   mpiexec -n 8 -m 1 ./benchmark_cluster
   mpiexec -n 16 -m 1 ./benchmark_cluster
+
+  cd $ROOT_DIR/utility/plot/
+  python3 plot_cluster_benchmarks.py
 "
