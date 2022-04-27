@@ -17,8 +17,8 @@ std::int32_t main(std::int32_t argc, char** argv)
   const auto ray_tracer = make_ray_tracer(settings);
 
   std::optional<ast::video> video(std::nullopt);
-  if (ray_tracer->communicator().rank() == 0)
-    video.emplace("../data/outputs/applications/video.mp4", ray_tracer->image_size(), 60);
+  if (ray_tracer->get_communicator().rank() == 0)
+    video.emplace("../data/outputs/applications/video.mp4", ray_tracer->get_image_size(), 60);
   
   constexpr auto frames(1000);
   for (auto i = 0; i < frames; ++i)
@@ -27,11 +27,11 @@ std::int32_t main(std::int32_t argc, char** argv)
       std::cout << i << "/" << frames - 1 << "\n";
 
     auto image = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       video->append(image);
 
-    ray_tracer->observer().transform().translation[2] += 0.01f;
-    ray_tracer->observer().transform().look_at({0, 0, 0});
+    ray_tracer->get_observer().get_transform().translation[2] += 0.01f;
+    ray_tracer->get_observer().get_transform().look_at({0, 0, 0});
   }
 
   return 0;

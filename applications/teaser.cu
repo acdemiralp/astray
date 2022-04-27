@@ -21,7 +21,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_minkowski.png");
   }
   {
@@ -35,7 +35,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_schwarzschild.png");
   }
   {
@@ -49,7 +49,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_kerr.png");
   }
   {
@@ -63,7 +63,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_reissner_nordstroem.png");
   }
   {
@@ -77,7 +77,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_morris_thorne.png");
   }
   {
@@ -91,7 +91,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const auto ray_tracer = make_ray_tracer(settings);
     const auto image      = ray_tracer->render_frame();
-    if (ray_tracer->communicator().rank() == 0)
+    if (ray_tracer->get_communicator().rank() == 0)
       image.save("../data/outputs/applications/teaser_kastor_traschen.png");
   }
 

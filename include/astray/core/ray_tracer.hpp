@@ -95,10 +95,10 @@ public:
     device_data data 
     {
       vector_type(
-        observer_.coordinate_time(), 
-        observer_.transform().translation[0], 
-        observer_.transform().translation[1], 
-        observer_.transform().translation[2]),
+        observer_.get_coordinate_time(), 
+        observer_.get_transform().translation[0], 
+        observer_.get_transform().translation[1], 
+        observer_.get_transform().translation[2]),
       device_background_.data().get(),
       background_.size               ,
       metric_                        ,
@@ -126,23 +126,23 @@ public:
         
         metric_type metric(data->metric); // A copy is necessary for correct creation of virtual function table.
         
-        if constexpr (metric_type::coordinate_system() == coordinate_system::boyer_lindquist || metric_type::coordinate_system() == coordinate_system::prolate_spheroidal)
-          convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray, metric.coordinate_system_parameter());
+        if constexpr (metric_type::coordinate_system() == coordinate_system_type::boyer_lindquist || metric_type::coordinate_system() == coordinate_system_type::prolate_spheroidal)
+          convert_ray<coordinate_system_type::cartesian, metric_type::coordinate_system()>(ray, metric.coordinate_system_parameter());
         else
-          convert_ray<coordinate_system::cartesian, metric_type::coordinate_system()>(ray);
+          convert_ray<coordinate_system_type::cartesian, metric_type::coordinate_system()>(ray);
         
         const auto termination = motion_type::integrate(ray, metric, data->iterations, data->lambda_step_size, data->lambda, data->bounds); //, data->error_evaluator);
         
         if (termination == termination_reason::none || termination == termination_reason::out_of_bounds)
         {
-          if constexpr (metric_type::coordinate_system() == coordinate_system::boyer_lindquist || metric_type::coordinate_system() == coordinate_system::prolate_spheroidal)
-            convert<metric_type::coordinate_system(), coordinate_system::cartesian>(ray.position, metric.coordinate_system_parameter());
+          if constexpr (metric_type::coordinate_system() == coordinate_system_type::boyer_lindquist || metric_type::coordinate_system() == coordinate_system_type::prolate_spheroidal)
+            convert<metric_type::coordinate_system(), coordinate_system_type::cartesian>(ray.position, metric.coordinate_system_parameter());
           else
-            convert<metric_type::coordinate_system(), coordinate_system::cartesian>(ray.position);
+            convert<metric_type::coordinate_system(), coordinate_system_type::cartesian>(ray.position);
         
           ray.position -= data->observer_position; // Environment map is relative to observer.
           
-          convert<coordinate_system::cartesian, coordinate_system::spherical>(ray.position);
+          convert<coordinate_system_type::cartesian, coordinate_system_type::spherical>(ray.position);
           
           image_size_type background_index(
             std::floor(ray.position[3] / constants::two_pi * static_cast<scalar_type>(data->background_size[0])),
@@ -184,7 +184,7 @@ public:
 #endif
   }
 
-  const image_size_type&      image_size          () const
+  const image_size_type&      get_image_size      () const
   {
     return partitioner_.domain_size();
   }
@@ -204,11 +204,11 @@ public:
 #endif
   }
 
-        observer_type&        observer            ()
+        observer_type&        get_observer        ()
   {
     return observer_;
   }
-  const observer_type&        observer            () const
+  const observer_type&        get_observer        () const
   {
     return observer_;
   }
@@ -217,7 +217,7 @@ public:
     observer_ = value;
   }
 
-  const image_type&           background          () const
+  const image_type&           get_background      () const
   {
     return background_;
   }
@@ -227,11 +227,11 @@ public:
     device_background_ = background_.data;
   }
 
-        metric_type&          metric              ()
+        metric_type&          get_metric          ()
   {
     return metric_;
   }
-  const metric_type&          metric              () const
+  const metric_type&          get_metric          () const
   {
     return metric_;
   }
@@ -240,7 +240,7 @@ public:
     metric_ = value;
   }
 
-  std::size_t                 iterations          () const
+  std::size_t                 get_iterations      () const
   {
     return iterations_;
   }
@@ -249,7 +249,7 @@ public:
     iterations_ = value;
   }
 
-  scalar_type                 lambda_step_size    () const
+  scalar_type                 get_lambda_step_size() const
   {
     return lambda_step_size_;
   }
@@ -258,7 +258,7 @@ public:
     lambda_step_size_ = value;
   }
 
-  scalar_type                 lambda              () const
+  scalar_type                 get_lambda          () const
   {
     return lambda_;
   }
@@ -267,11 +267,11 @@ public:
     lambda_ = value;
   }
 
-        bounds_type&          bounds              ()
+        bounds_type&          get_bounds          ()
   {
     return bounds_;
   }
-  const bounds_type&          bounds              () const
+  const bounds_type&          get_bounds          () const
   {
     return bounds_;
   }
@@ -280,11 +280,11 @@ public:
     bounds_ = value;
   }
 
-        error_evaluator_type& error_evaluator     ()
+        error_evaluator_type& get_error_evaluator ()
   {
     return error_evaluator_;
   }
-  const error_evaluator_type& error_evaluator     () const
+  const error_evaluator_type& get_error_evaluator () const
   {
     return error_evaluator_;
   }
@@ -293,7 +293,7 @@ public:
     error_evaluator_ = value;
   }
   
-  bool                        debug               () const
+  bool                        is_debug            () const
   {
     return debug_;
   }
@@ -302,7 +302,7 @@ public:
     debug_ = value;
   }
 
-  const mpi::communicator&    communicator        () const
+  const mpi::communicator&    get_communicator    () const
   {
     return communicator_;
   }

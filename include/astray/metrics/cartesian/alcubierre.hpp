@@ -11,10 +11,10 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class alcubierre : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
+class alcubierre : public metric<coordinate_system_type::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
 
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
@@ -45,7 +45,7 @@ public:
     const auto t3  = f;
     const auto t4  = std::pow(t3, 2);
     const auto t6  = df[1];
-    const auto t7  = std::pow(constants::speed_of_light, 2);
+    const auto t7  = std::pow(consts::speed_of_light, 2);
     const auto t8  = static_cast<scalar_type>(1) / t7;
     const auto t10 = t2 * t4 * t6 * t8;
     const auto t11 = df[0];

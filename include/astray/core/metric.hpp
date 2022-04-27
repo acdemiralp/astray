@@ -8,16 +8,16 @@
 namespace ast
 {
 template <
-  coordinate_system system                   ,
-  typename          scalar_type              , 
-  typename          vector_type              = vector4  <scalar_type>, 
-  typename          christoffel_symbols_type = tensor444<scalar_type>>
+  coordinate_system_type system                   ,
+  typename               scalar_type              , 
+  typename               vector_type              = vector4  <scalar_type>, 
+  typename               christoffel_symbols_type = tensor444<scalar_type>>
 class metric
 {
 public:
   virtual ~metric() = default;
 
-  static constexpr coordinate_system          coordinate_system          ()
+  static constexpr coordinate_system_type     coordinate_system          ()
   {
     return system;
   }

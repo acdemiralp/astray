@@ -3,7 +3,6 @@
 #include <cmath>
 
 #include <astray/core/metric.hpp>
-#include <astray/math/constants.hpp>
 #include <astray/parallel/thrust.hpp>
 
 #if (THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA)
@@ -16,11 +15,9 @@ template <
   typename scalar_type              , 
   typename vector_type              = ast::vector4  <scalar_type>, 
   typename christoffel_symbols_type = ast::tensor444<scalar_type>>
-class bessel : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
+class bessel : public metric<coordinate_system_type::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
-
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto t1   = static_cast<scalar_type>(std::pow(position[1], 2));

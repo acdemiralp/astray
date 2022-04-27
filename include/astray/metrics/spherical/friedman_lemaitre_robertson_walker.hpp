@@ -11,7 +11,7 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class friedman_lemaitre_robertson_walker : public metric<coordinate_system::spherical, scalar_type, vector_type, christoffel_symbols_type>
+class friedman_lemaitre_robertson_walker : public metric<coordinate_system_type::spherical, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
   enum class curvature_constant : std::int8_t
@@ -21,12 +21,12 @@ public:
     positive =  1,
   };
 
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
   
   __device__ termination_reason       check_termination  (const vector_type& position, const vector_type& direction) const override
   {
     if (curvature == curvature_constant::negative)
-      if (std::abs(static_cast<scalar_type>(1) + static_cast<scalar_type>(0.25) * static_cast<scalar_type>(curvature) * std::pow(position[1], 2)) < constants::epsilon)
+      if (std::abs(static_cast<scalar_type>(1) + static_cast<scalar_type>(0.25) * static_cast<scalar_type>(curvature) * std::pow(position[1], 2)) < consts::epsilon)
         return termination_reason::spacetime_breakdown;
     return termination_reason::none;
   }
@@ -34,7 +34,7 @@ public:
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto  k        = static_cast<scalar_type>(curvature);
-    const auto  constant = static_cast<scalar_type>(4) * constants::gravitational_constant * mass / constants::three_pi;
+    const auto  constant = static_cast<scalar_type>(4) * consts::gravitational_constant * mass / consts::three_pi;
     
     scalar_type r ;
     scalar_type dr;

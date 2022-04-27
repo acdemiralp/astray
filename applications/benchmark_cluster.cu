@@ -70,7 +70,7 @@ constexpr auto run_benchmark  (
     });
   }, repeats);
 
-  if (ray_tracer->communicator().rank() == 0)
+  if (ray_tracer->get_communicator().rank() == 0)
     image->save("./benchmark_cluster_" + device_name + "_" + metric_name + ".png"); // Just put it in the execution directory.
 
   return session;

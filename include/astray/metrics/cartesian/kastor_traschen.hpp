@@ -11,10 +11,10 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class kastor_traschen : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
+class kastor_traschen : public metric<coordinate_system_type::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
 
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
@@ -110,6 +110,6 @@ public:
   scalar_type position1 = static_cast<scalar_type>( 1);
   scalar_type mass2     = static_cast<scalar_type>( 1);
   scalar_type position2 = static_cast<scalar_type>(-1);
-  scalar_type h         = static_cast<scalar_type>(constants::epsilon);
+  scalar_type h         = static_cast<scalar_type>(consts::epsilon);
 };
 }

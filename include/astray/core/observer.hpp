@@ -153,7 +153,7 @@ public:
     return rays_;
   }
   
-  scalar_type                      coordinate_time    () const
+  scalar_type                      get_coordinate_time() const
   {
     return coordinate_time_;
   }
@@ -162,11 +162,11 @@ public:
     coordinate_time_ = value;
   }
   
-        transform_type&            transform          ()
+        transform_type&            get_transform      ()
   {
     return transform_;
   }
-  const transform_type&            transform          () const
+  const transform_type&            get_transform      () const
   {
     return transform_;
   }
@@ -175,11 +175,11 @@ public:
     transform_ = value;
   }
 
-        projection_type&           projection         ()
+        projection_type&           get_projection     ()
   {
     return projection_;
   }
-  const projection_type&           projection         () const
+  const projection_type&           get_projection     () const
   {
     return projection_;
   }

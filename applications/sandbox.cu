@@ -23,7 +23,7 @@ std::int32_t main(std::int32_t argc, char** argv)
   }, 1);
   std::cout << "Mean: " << record.mean() << "\n";
   
-  if (ray_tracer->communicator().rank() == 0)
+  if (ray_tracer->get_communicator().rank() == 0)
     image.save("../data/outputs/applications/sandbox.png");
 
   return 0;

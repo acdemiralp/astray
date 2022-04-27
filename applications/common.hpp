@@ -53,12 +53,12 @@ constexpr auto make_ray_tracer(const settings_type<scalar_type, metric_type, mot
     settings.bounds          ,
     settings.error_evaluator ,
     settings.debug           );
-  ray_tracer->observer().transform().translation = settings.position;
-  ray_tracer->observer().transform().rotation_from_euler(settings.rotation);
+  ray_tracer->get_observer().get_transform().translation = settings.position;
+  ray_tracer->get_observer().get_transform().rotation_from_euler(settings.rotation);
   if (settings.look_at_origin)
-    ray_tracer->observer().transform().look_at(ast::transform<scalar_type>::vector_type::Zero());
-  ray_tracer->observer().set_coordinate_time(settings.coordinate_time);
-  ray_tracer->observer().set_projection     (settings.projection);
+    ray_tracer->get_observer().get_transform().look_at(ast::transform<scalar_type>::vector_type::Zero());
+  ray_tracer->get_observer().set_coordinate_time(settings.coordinate_time);
+  ray_tracer->get_observer().set_projection     (settings.projection);
   ray_tracer->set_background(settings.background_image);
   return ray_tracer;
 }
