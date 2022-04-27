@@ -81,7 +81,7 @@ std::int32_t main(std::int32_t argc, char** argv)
   ast::mpi::environment  environment ;
   ast::mpi::communicator communicator;
   
-  constexpr auto runs = 10;
+  constexpr auto runs = 5;
   
   std::string device_name;
   if      constexpr (ast::shared_device == ast::shared_device_type::cpp )

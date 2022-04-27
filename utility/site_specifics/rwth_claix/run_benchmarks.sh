@@ -22,10 +22,10 @@ ssh -t ad784563@login18-g-1 "
   cd build
 
   mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 2 ./benchmark_cluster
-  mpiexec -n 4 -m 4 ./benchmark_cluster
-  mpiexec -n 8 -m 8 ./benchmark_cluster
-  mpiexec -n 16 -m 16 ./benchmark_cluster
+  mpiexec -n 2 -m 1 ./benchmark_cluster
+  mpiexec -n 4 -m 1 ./benchmark_cluster
+  mpiexec -n 8 -m 1 ./benchmark_cluster
+  mpiexec -n 16 -m 1 ./benchmark_cluster
   
   cmake .. -DASTRAY_DEVICE_SYSTEM=OMP
   cd ..
@@ -33,10 +33,10 @@ ssh -t ad784563@login18-g-1 "
   cd build
 
   mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 2 ./benchmark_cluster
-  mpiexec -n 4 -m 4 ./benchmark_cluster
-  mpiexec -n 8 -m 8 ./benchmark_cluster
-  mpiexec -n 16 -m 16 ./benchmark_cluster
+  mpiexec -n 2 -m 1 ./benchmark_cluster
+  mpiexec -n 4 -m 1 ./benchmark_cluster
+  mpiexec -n 8 -m 1 ./benchmark_cluster
+  mpiexec -n 16 -m 1 ./benchmark_cluster
   
   cmake .. -DASTRAY_DEVICE_SYSTEM=TBB
   cd ..
@@ -44,10 +44,10 @@ ssh -t ad784563@login18-g-1 "
   cd build
 
   mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 2 ./benchmark_cluster
-  mpiexec -n 4 -m 4 ./benchmark_cluster
-  mpiexec -n 8 -m 8 ./benchmark_cluster
-  mpiexec -n 16 -m 16 ./benchmark_cluster
+  mpiexec -n 2 -m 1 ./benchmark_cluster
+  mpiexec -n 4 -m 1 ./benchmark_cluster
+  mpiexec -n 8 -m 1 ./benchmark_cluster
+  mpiexec -n 16 -m 1 ./benchmark_cluster
   
   cmake .. -DASTRAY_DEVICE_SYSTEM=CPP
   cd ..
@@ -55,8 +55,8 @@ ssh -t ad784563@login18-g-1 "
   cd build
 
   mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 2 ./benchmark_cluster
-  mpiexec -n 4 -m 4 ./benchmark_cluster
-  mpiexec -n 8 -m 8 ./benchmark_cluster
-  mpiexec -n 16 -m 16 ./benchmark_cluster
+  mpiexec -n 2 -m 1 ./benchmark_cluster
+  mpiexec -n 4 -m 1 ./benchmark_cluster
+  mpiexec -n 8 -m 1 ./benchmark_cluster
+  mpiexec -n 16 -m 1 ./benchmark_cluster
 "
