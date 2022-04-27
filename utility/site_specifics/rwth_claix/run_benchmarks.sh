@@ -4,7 +4,26 @@ THIS_SCRIPT=$(readlink -f "$0")
 THIS_SCRIPT_PATH=$(dirname "$THIS_SCRIPT")
 ROOT_DIR=$THIS_SCRIPT_PATH/../../../
 
+build()
+{
+  cmake .. -DASTRAY_USE_MPI=ON -DASTRAY_BUILD_APPLICATIONS=ON -DASTRAY_BUILD_TESTS=OFF -DASTRAY_DEVICE_SYSTEM=$1
+  cd ..
+  ./bootstrap.sh
+  cd build
+}
+run()
+{
+  mpiexec -n 1  -m 1 -hostfile=$MPIHOSTLIST ./benchmark_cluster
+  mpiexec -n 2  -m 1 -hostfile=$MPIHOSTLIST ./benchmark_cluster
+  mpiexec -n 4  -m 1 -hostfile=$MPIHOSTLIST ./benchmark_cluster
+  mpiexec -n 8  -m 1 -hostfile=$MPIHOSTLIST ./benchmark_cluster
+  mpiexec -n 16 -m 1 -hostfile=$MPIHOSTLIST ./benchmark_cluster
+}
+
 ssh -t ad784563@login18-g-1 "
+  $(typeset -f build);
+  $(typeset -f run);
+
   source ~/.zshrc
 
   module load gcc/9
@@ -15,50 +34,15 @@ ssh -t ad784563@login18-g-1 "
   cd $ROOT_DIR
   ./bootstrap.sh
   cd build
-
-  cmake .. -DASTRAY_USE_MPI=ON -DASTRAY_BUILD_APPLICATIONS=ON -DASTRAY_BUILD_TESTS=OFF -DASTRAY_DEVICE_SYSTEM=CUDA
-  cd ..
-  ./bootstrap.sh
-  cd build
-
-  mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 1 ./benchmark_cluster
-  mpiexec -n 4 -m 1 ./benchmark_cluster
-  mpiexec -n 8 -m 1 ./benchmark_cluster
-  mpiexec -n 16 -m 1 ./benchmark_cluster
   
-  cmake .. -DASTRAY_DEVICE_SYSTEM=OMP
-  cd ..
-  ./bootstrap.sh  
-  cd build
-
-  mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 1 ./benchmark_cluster
-  mpiexec -n 4 -m 1 ./benchmark_cluster
-  mpiexec -n 8 -m 1 ./benchmark_cluster
-  mpiexec -n 16 -m 1 ./benchmark_cluster
-  
-  cmake .. -DASTRAY_DEVICE_SYSTEM=TBB
-  cd ..
-  ./bootstrap.sh  
-  cd build
-
-  mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 1 ./benchmark_cluster
-  mpiexec -n 4 -m 1 ./benchmark_cluster
-  mpiexec -n 8 -m 1 ./benchmark_cluster
-  mpiexec -n 16 -m 1 ./benchmark_cluster
-  
-  cmake .. -DASTRAY_DEVICE_SYSTEM=CPP
-  cd ..
-  ./bootstrap.sh  
-  cd build
-
-  mpiexec -n 1 -m 1 ./benchmark_cluster
-  mpiexec -n 2 -m 1 ./benchmark_cluster
-  mpiexec -n 4 -m 1 ./benchmark_cluster
-  mpiexec -n 8 -m 1 ./benchmark_cluster
-  mpiexec -n 16 -m 1 ./benchmark_cluster
+  build CUDA
+  run
+  build OMP
+  run
+  build TBB
+  run
+  build CPP
+  run
 
   cd $ROOT_DIR/utility/plot/
   python3 plot_cluster_benchmarks.py
