@@ -12,13 +12,13 @@ __device__ constexpr type        unravel_index    (std::size_t index      , cons
   type multi_index {};
 
   if constexpr (fortran_order)
-    for (std::size_t i = 0; i < dimensions.size(); ++i)
+    for (std::size_t i = 0; i < static_cast<std::size_t>(dimensions.size()); ++i)
     {
       multi_index[i] = index % dimensions[i];
       index          = index / dimensions[i];
     }
   else
-    for (std::ptrdiff_t i = dimensions.size() - 1; i >= 0; --i)
+    for (std::ptrdiff_t i = static_cast<std::ptrdiff_t>(dimensions.size() - 1); i >= 0; --i)
     {
       multi_index[i] = index % dimensions[i];
       index          = index / dimensions[i];
@@ -32,10 +32,10 @@ __device__ constexpr std::size_t ravel_multi_index(const type& multi_index, cons
   std::size_t index(0);
 
   if constexpr (fortran_order)
-    for (std::ptrdiff_t i = dimensions.size() - 1; i >= 0; --i)
+    for (std::ptrdiff_t i = static_cast<std::ptrdiff_t>(dimensions.size() - 1); i >= 0; --i)
       index = index * dimensions[i] + multi_index[i];
   else
-    for (std::size_t i = 0; i < dimensions.size(); ++i)
+    for (std::size_t i = 0; i < static_cast<std::size_t>(dimensions.size()); ++i)
       index = index * dimensions[i] + multi_index[i];
   
   return index;

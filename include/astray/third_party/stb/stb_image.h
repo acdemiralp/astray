@@ -388,15 +388,7 @@ typedef unsigned short stbi_us;
 extern "C" {
 #endif
 
-#ifndef STBIDEF
-#ifdef STB_IMAGE_STATIC
-#define STBIDEF static
-#else
-#define STBIDEF extern
-#endif
-#endif
-
-#define STBIDEF inline // Hack to allow including from multiple headers.
+#define STBIDEF static inline // Hack to allow including from multiple headers.
 
 //////////////////////////////////////////////////////////////////////////////
 //

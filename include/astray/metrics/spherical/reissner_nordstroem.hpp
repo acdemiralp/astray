@@ -11,19 +11,19 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class reissner_nordstroem : public metric<coordinate_system::spherical, scalar_type, vector_type, christoffel_symbols_type>
+class reissner_nordstroem : public metric<coordinate_system_type::spherical, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
 
   __device__ termination_reason       check_termination  (const vector_type& position, const vector_type& direction) const override
   {
     if (position[1] <= static_cast<scalar_type>(0))
       return termination_reason::numeric_error;
     
-    const auto half_schwarzschild_radius = static_cast<scalar_type>(0.5) * constants::schwarzschild_radius(mass);
+    const auto half_schwarzschild_radius = static_cast<scalar_type>(0.5) * consts::schwarzschild_radius(mass);
     const auto disk_radius               = static_cast<scalar_type>(1) - static_cast<scalar_type>(4) * 
-      constants::characteristic_length_scale(charge) / std::pow(constants::schwarzschild_radius(mass), 2);
+      consts::characteristic_length_scale(charge) / std::pow(consts::schwarzschild_radius(mass), 2);
     const auto sqrt_disk_radius          = std::sqrt(disk_radius);
     const auto outer_horizon             = disk_radius < 0 ? static_cast<scalar_type>(0) : half_schwarzschild_radius * (static_cast<scalar_type>(1) + sqrt_disk_radius);
     const auto inner_horizon             = disk_radius < 0 ? static_cast<scalar_type>(0) : half_schwarzschild_radius * (static_cast<scalar_type>(1) - sqrt_disk_radius);
@@ -37,12 +37,12 @@ public:
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto t1  = std::pow(position[1], 2);
-    const auto t2  = constants::schwarzschild_radius(mass) * position[1];
+    const auto t2  = consts::schwarzschild_radius(mass) * position[1];
     const auto t3  = std::pow(charge, 2);
-    const auto t4  = constants::characteristic_length_scale(charge);
+    const auto t4  = consts::characteristic_length_scale(charge);
     const auto t5  = t1 - t2 + t4;
     const auto t6  = std::pow(t1, 2);
-    const auto t10 = constants::speed_of_light_squared;
+    const auto t10 = consts::speed_of_light_squared;
     const auto t12 = t2 - static_cast<scalar_type>(2) * t4;
     const auto t16 = static_cast<scalar_type>(1) / position[1];
     const auto t20 = t16 / t5 * t12 / static_cast<scalar_type>(2);

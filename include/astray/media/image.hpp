@@ -7,8 +7,14 @@
 
 #include <astray/math/indexing.hpp>
 #include <astray/math/linear_algebra.hpp>
+#include <astray/utility/warning.hpp>
+
+DISABLE_WARNING_PUSH
+DISABLE_WARNING_PRAGMAS
+DISABLE_WARNING_NO_DEPRECATED
 #include <astray/third_party/stb/stb_image.h>
 #include <astray/third_party/stb/stb_image_write.h>
+DISABLE_WARNING_POP
 
 namespace ast
 {

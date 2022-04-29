@@ -3,7 +3,6 @@
 #include <cmath>
 
 #include <astray/core/metric.hpp>
-#include <astray/math/constants.hpp>
 
 namespace ast::metrics
 {
@@ -11,11 +10,9 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class morris_thorne : public metric<coordinate_system::spherical, scalar_type, vector_type, christoffel_symbols_type>
+class morris_thorne : public metric<coordinate_system_type::spherical, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
-
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto t1  = static_cast<scalar_type>(std::pow(position[1]  , 2));

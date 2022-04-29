@@ -1,9 +1,10 @@
 ##################################################    Project     ##################################################
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.23 FATAL_ERROR)
 project               (astray VERSION 1.0 LANGUAGES C CXX)
 list                  (APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set_property          (GLOBAL PROPERTY USE_FOLDERS ON)
 set                   (CMAKE_CXX_STANDARD 17)
+set                   (CMAKE_BUILD_TYPE Release)
 
 include               (set_max_warning_level)
 set_max_warning_level ()
@@ -50,8 +51,9 @@ if               (ASTRAY_USE_MPI)
 endif            ()
 
 if               (${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
-  enable_language(CUDA) 
+  enable_language(CUDA)
   find_package   (CUDA REQUIRED)
+  set            (CMAKE_CUDA_ARCHITECTURES "all-major")
   list           (APPEND PROJECT_COMPILE_OPTIONS $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda --expt-relaxed-constexpr --use_fast_math>)
   import_library (CUDA_INCLUDE_DIRS CUDA_LIBRARIES)
   list           (APPEND PROJECT_COMPILE_DEFINITIONS -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA)
@@ -100,7 +102,8 @@ set_target_properties     (${PROJECT_NAME}_ PROPERTIES LINKER_LANGUAGE CXX)
 
 ##################################################  Applications  ##################################################
 if(ASTRAY_BUILD_APPLICATIONS)
-  file(GLOB PROJECT_APPLICATION_CPPS applications/*.cu)
+  file(GLOB PROJECT_APPLICATION_HPPS applications/*.hpp)
+  file(GLOB PROJECT_APPLICATION_CPPS applications/*.cu )
 
   # Hack for compiling .cu files as .cpp.
   if   (NOT ${ASTRAY_DEVICE_SYSTEM} STREQUAL CUDA)
@@ -109,12 +112,12 @@ if(ASTRAY_BUILD_APPLICATIONS)
 
   foreach(_SOURCE ${PROJECT_APPLICATION_CPPS})
     get_filename_component(_NAME ${_SOURCE} NAME_WE)
-    add_executable        (${_NAME} ${_SOURCE})
+    add_executable        (${_NAME} ${PROJECT_APPLICATION_HPPS} ${_SOURCE})
     target_link_libraries (${_NAME} ${PROJECT_NAME})
     target_link_libraries (${_NAME} ${PROJECT_LIBRARIES})
     set_property          (TARGET ${_NAME} PROPERTY FOLDER applications)
     set_property          (TARGET ${_NAME} PROPERTY LINKER_LANGUAGE CXX)
-    assign_source_group   (${_SOURCE})
+    assign_source_group   (${PROJECT_APPLICATION_HPPS} ${_SOURCE})
   endforeach()
 endif()
 

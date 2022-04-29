@@ -11,14 +11,14 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class de_sitter : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
+class de_sitter : public metric<coordinate_system_type::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
 
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
-    const auto t1 = constants::speed_of_light_squared;
+    const auto t1 = consts::speed_of_light_squared;
     const auto t4 = std::exp(hubble_parameter * position[0]);
     const auto t5 = std::pow(t4, 2);
     const auto t7 = static_cast<scalar_type>(1) / t1 * t5 * hubble_parameter;
@@ -37,6 +37,6 @@ public:
     return symbols;
   }
 
-  scalar_type hubble_parameter = std::sqrt(constants::cosmological_constant * constants::speed_of_light_squared / static_cast<scalar_type>(3));
+  scalar_type hubble_parameter = std::sqrt(consts::cosmological_constant * consts::speed_of_light_squared / static_cast<scalar_type>(3));
 };
 }

@@ -3,11 +3,10 @@
 #include <cmath>
 
 #include <astray/core/metric.hpp>
-#include <astray/math/constants.hpp>
-#include <astray/parallel/shared_device.hpp>
+#include <astray/parallel/thrust.hpp>
 
 #if (THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA)
-#include <math_functions.h>
+#include <cuda_runtime_api.h>
 #endif
 
 namespace ast::metrics
@@ -16,11 +15,9 @@ template <
   typename scalar_type              , 
   typename vector_type              = ast::vector4  <scalar_type>, 
   typename christoffel_symbols_type = ast::tensor444<scalar_type>>
-class bessel : public metric<coordinate_system::cartesian, scalar_type, vector_type, christoffel_symbols_type>
+class bessel : public metric<coordinate_system_type::cartesian, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
-
   __device__ christoffel_symbols_type christoffel_symbols(const vector_type& position) const override
   {
     const auto t1   = static_cast<scalar_type>(std::pow(position[1], 2));
@@ -161,17 +158,19 @@ public:
 
   __device__ static scalar_type       cyl_bessel_j0      (const scalar_type x)
   {
-    if constexpr (shared_device == shared_device_type::cuda)
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
       return static_cast<scalar_type>(j0(x));
-    else
+#else
       return std::cyl_bessel_j(0, x);
+#endif
   }
   __device__ static scalar_type       cyl_bessel_j1      (const scalar_type x)
   {
-    if constexpr (shared_device == shared_device_type::cuda)
+#if THRUST_DEVICE_SYSTEM == THRUST_DEVICE_SYSTEM_CUDA
       return static_cast<scalar_type>(j1(x));
-    else
+#else
       return std::cyl_bessel_j(1, x);
+#endif
   }
 
   scalar_type C = static_cast<scalar_type>(1);

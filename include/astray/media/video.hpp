@@ -18,6 +18,11 @@ extern "C"
 
 #include <astray/math/linear_algebra.hpp>
 #include <astray/media/image.hpp>
+#include <astray/utility/warning.hpp>
+
+DISABLE_WARNING_PUSH
+DISABLE_WARNING_PRAGMAS
+DISABLE_WARNING_NO_DEPRECATED
 
 namespace ast
 {
@@ -168,3 +173,5 @@ protected:
   std::int64_t     frame_count_    = 0;
 };
 }
+
+DISABLE_WARNING_POP

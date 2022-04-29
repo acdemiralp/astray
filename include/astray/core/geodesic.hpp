@@ -7,7 +7,6 @@
 
 namespace ast
 {
-// Still has room for improvement.
 template <typename scalar_type_, typename tableau_type_, typename error_evaluator_type_ = proportional_integral_controller<scalar_type_, tableau_type_>>
 class geodesic
 {
@@ -35,9 +34,9 @@ public:
     iterator_type iterator 
     {
       {
-        lambda,                                                        // t0
-        mapped<value_type>(ray.position.data()),                       // y0 - Valid as long as ray.position and ray.direction are contiguous in memory. 
-        [metric] __device__ (const scalar_type t, const value_type& y) // dy/dt = f(t,y)
+        lambda,                                                         // t0
+        mapped<value_type>(ray.position.data()),                        // y0 - Valid as long as ray.position and ray.direction are contiguous in memory. 
+        [&metric] __device__ (const scalar_type t, const value_type& y) // dy/dt = f(t,y)
         {
           value_type dydt;
           dydt.head(4) = y.tail(4);

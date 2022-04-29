@@ -153,20 +153,7 @@ LICENSE
 
 #include <stdlib.h>
 
-// if STB_IMAGE_WRITE_STATIC causes problems, try defining STBIWDEF to 'inline' or 'static inline'
-#ifndef STBIWDEF
-#ifdef STB_IMAGE_WRITE_STATIC
-#define STBIWDEF  static
-#else
-#ifdef __cplusplus
-#define STBIWDEF  extern "C"
-#else
-#define STBIWDEF  extern
-#endif
-#endif
-#endif
-
-#define STBIWDEF inline // Hack to allow including from multiple headers.
+#define STBIWDEF static inline // Hack to allow including from multiple headers.
 #define STB_IMAGE_WRITE_STATIC // Hack to allow including from multiple headers.
 
 #ifndef STB_IMAGE_WRITE_STATIC  // C++ forbids static forward declarations

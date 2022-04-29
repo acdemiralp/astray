@@ -113,8 +113,8 @@ public:
     std::ostringstream stream;
     for (auto& record : session<type>::records)
       stream << rank_ << "," << record.to_string() << "\n";
-    const std::string  local_string = stream      .str ();
-    const std::int32_t local_size   = local_string.size();
+    const std::string local_string = stream.str();
+    const auto        local_size   = static_cast<std::int32_t>(local_string.size());
     
     std::vector<std::int32_t> sizes        (size_);
     std::vector<std::int32_t> displacements(size_);
@@ -123,7 +123,7 @@ public:
     for (auto i = 0; i < size_; ++i)
       displacements[i] = counter, counter += sizes[i];
     gathered_.resize(counter);
-    MPI_Gatherv(local_string.data(), local_string.size(), MPI_CHAR, gathered_.data(), sizes.data(), displacements.data(), MPI_CHAR, master_rank_, communicator_);
+    MPI_Gatherv(local_string.data(), local_size, MPI_CHAR, gathered_.data(), sizes.data(), displacements.data(), MPI_CHAR, master_rank_, communicator_);
   }
   std::string to_string()                            override
   {

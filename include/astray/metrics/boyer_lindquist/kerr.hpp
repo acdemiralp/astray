@@ -11,10 +11,10 @@ template <
   typename scalar_type              , 
   typename vector_type              = vector4  <scalar_type>, 
   typename christoffel_symbols_type = tensor444<scalar_type>>
-class kerr : public metric<coordinate_system::boyer_lindquist, scalar_type, vector_type, christoffel_symbols_type>
+class kerr : public metric<coordinate_system_type::boyer_lindquist, scalar_type, vector_type, christoffel_symbols_type>
 {
 public:
-  using constants = constants<scalar_type>;
+  using consts = constants<scalar_type>;
 
   __device__ scalar_type              coordinate_system_parameter() const override
   {
@@ -23,7 +23,7 @@ public:
   __device__ termination_reason       check_termination          (const vector_type& position, const vector_type& direction) const override
   {
     const auto event_horizon = mass + std::sqrt(static_cast<scalar_type>(std::pow(mass, 2)) - static_cast<scalar_type>(std::pow(angular_momentum, 2)));
-    if (position[1] < static_cast<scalar_type>(0) || position[1] <= (static_cast<scalar_type>(1) + constants::epsilon) * event_horizon)
+    if (position[1] < static_cast<scalar_type>(0) || position[1] <= (static_cast<scalar_type>(1) + consts::epsilon) * event_horizon)
       return termination_reason::spacetime_breakdown;
     return termination_reason::none;
   }

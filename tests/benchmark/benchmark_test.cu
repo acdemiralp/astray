@@ -9,7 +9,7 @@ TEST_CASE("ast::benchmark")
 {
   auto record = ast::benchmark<double, std::milli, std::chrono::high_resolution_clock> ([ ] ()
   {
-    std::vector<double> vector(1e8); // 0.8 GB.
+    std::vector<double> vector(static_cast<std::size_t>(1e8)); // 0.8 GB.
     std::iota(vector.begin(), vector.end(), 0);
     vector.clear();
   }, static_cast<std::size_t>(10));
